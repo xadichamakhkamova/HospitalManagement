@@ -1,0 +1,261 @@
+syntax="proto3";
+
+option go_package = "./genproto/adminpb";
+
+import "google/protobuf/timestamp.proto";                 
+
+// ---------------- Service ----------------
+service AdminService {
+    //Department
+    rpc CreateDepartment(CreateDepartmentRequest) returns (CreateDepartmentResponse);
+    rpc GetDepartmentById(GetDepartmentByIdRequest) returns (GetDepartmentByIdResponse);
+    rpc ListDepartments(ListDepartmentsRequest) returns (ListDepartmentsResponse);
+    rpc UpdateDepartment(UpdateDepartmentRequest) returns (UpdateDepartmentResponse);
+    rpc DeleteDepartment(DeleteDepartmentRequest) returns (DeleteDepartmentResponse);
+    
+    //Personal
+    rpc CreatePersonal(CreatePersonalRequest) returns (CreatePersonalResponse);
+    rpc GetPersonalById(GetPersonalByIdRequest) returns (GetPersonalByIdResponse);
+    rpc ListPersonals(ListPersonalsRequest) returns (ListPersonalsResponse);
+    rpc UpdatePersonal(UpdatePersonalRequest) returns (UpdatePersonalResponse);
+    rpc DeletePersonal(DeletePersonalRequest) returns (DeletePersonalResponse);
+
+    //Doctor
+    rpc CreateDoctor(CreateDoctorRequest) returns (CreateDoctorResponse);
+    rpc GetDoctorById(GetPersonalByIdRequest) returns (GetDoctorByIdResponse);
+    rpc ListDoctors(ListPersonalsRequest) returns (ListDoctorsResponse);
+    rpc UpdateDoctor(UpdateDoctorRequest) returns (UpdateDoctorResponse);
+    rpc DeleteDoctor(DeletePersonalRequest) returns (DeletePersonalResponse);
+
+     //Bed
+     rpc CreateBed(CreateBedRequest) returns (CreateBedResponse);
+     rpc GetBedByID(GetBedByIDRequest) returns (GetBedByIDResponse);
+     rpc ListBedS(ListBedSRequest) returns (ListBedSResponse);
+     rpc UpdateBed(UpdateBedRequest) returns (UpdateBedResponse);
+     rpc DeleteBed(DeleteBedRequest) returns (DeleteBedResponse);
+}
+
+enum BedStatuS {
+    AVAILABLE = 0;
+    OCCUPIED = 1;
+    RESERVED = 2;
+    MAINTENANCE = 3;
+}
+
+message Department {
+    string id = 1;
+    string name = 2;
+    int64 number = 3;
+    string description = 4;
+    Timestamps1 timestamps = 5;
+}
+
+message Personal {
+    string id = 1;
+    string profession = 2;
+    string full_name = 3;
+    string email = 4;
+    string password = 5;
+    string address = 6;
+    string phone_number = 7;
+    Timestamps1 timestamps = 8;
+}
+
+message Doctor {
+    Personal info = 1;
+    int64 department_number = 2;
+}
+
+message BedInfo {
+    string id = 1;
+    int64 bed_number = 2;
+    string bed_type = 3;
+    string description = 4;
+    BedStatuS status = 5; 
+    Timestamps1 timestamps = 6;
+}
+
+// ---------------- Department CRUD ----------------
+//CREATE
+message CreateDepartmentRequest {
+    string name = 1;
+    int64 number = 2;
+    string description = 3;
+}
+message CreateDepartmentResponse {
+    Department department = 1;
+}
+
+// GET BY ID
+message GetDepartmentByIdRequest {
+    string id = 1;
+}
+message GetDepartmentByIdResponse {
+    Department department = 1;
+}
+
+//LIST
+message ListDepartmentsRequest {
+    string search = 1; //name
+    int32 page = 3; //for pagination
+    int32 limit = 4; 
+}
+message ListDepartmentsResponse {
+    repeated Department deparments = 1;
+}
+
+//UPDATE
+message UpdateDepartmentRequest {
+    string id = 1;
+    string name = 2;
+    int64 number = 3;
+    string description = 4;
+}
+message UpdateDepartmentResponse {
+    Department department = 1;
+}
+
+//DELETE
+message DeleteDepartmentRequest {
+    string id = 1;
+}
+message DeleteDepartmentResponse {
+    int64 status = 1; // 204 = deleted
+}
+
+// ---------------- Personal and Doctor CRUD ----------------
+//CREATE
+message CreatePersonalRequest {
+    string profession = 1;
+    string full_name = 2;
+    string email = 3;
+    string password = 4;
+    string address = 5;
+    string phone_number = 6;
+}
+message CreatePersonalResponse {
+    Personal personal = 1;
+}
+message CreateDoctorRequest {
+    string personal_id = 1;
+    int64 department_number = 2;
+}
+message CreateDoctorResponse {
+    Doctor doctor = 1;
+}
+
+//GET BY ID
+message GetPersonalByIdRequest {
+    string id = 1;
+}
+message GetPersonalByIdResponse {
+    Personal personal = 1;
+}
+
+//LIST
+message ListPersonalsRequest {
+    string search = 1; //profession
+    int32 page = 3;
+    int32 limit = 4;
+}
+message ListPersonalsResponse {
+    repeated Personal personals = 1;
+}
+message GetDoctorByIdResponse {
+    Doctor doctor = 1;
+}
+message ListDoctorsResponse {
+    repeated Doctor doctors = 1;
+}
+
+//UPDATE
+message UpdatePersonalRequest {
+    string id = 1;
+    string profession = 2;
+    string full_name = 3;
+    string email = 4;
+    string password = 5;
+    string address = 6;
+    string phone_number = 7;
+}
+message UpdatePersonalResponse {
+    Personal personal= 1;
+}
+message UpdateDoctorRequest {
+    string id = 1;
+    string profession = 2;
+    string full_name = 3;
+    string email = 4;
+    string password = 5;
+    string address = 6;
+    string phone_number = 7;
+    int64 department_number = 8;
+}
+message UpdateDoctorResponse {
+    Doctor doctor = 1;
+}
+
+//DELETE
+message DeletePersonalRequest {
+    string id = 1;
+}
+message DeletePersonalResponse {
+    int64 status = 1; // 204 = deleted
+}
+
+// ---------------- BED CRUD ----------------
+// Create
+message CreateBedRequest {
+    int64 bed_number = 1;
+    string bed_type = 2;
+    string description = 3;
+}
+message CreateBedResponse {
+    BedInfo bed = 1;
+}
+
+// GET BY ID
+message GetBedByIDRequest {
+    string id = 1;
+}
+message GetBedByIDResponse {
+    BedInfo bed = 1;
+}
+
+// LIST
+message ListBedSRequest {
+    string search = 1;         
+    BedStatuS status = 2;      
+    int32 page = 3;
+    int32 limit = 4;
+}
+message ListBedSResponse {
+    repeated BedInfo beds = 1;
+    int32 total_count = 2;
+}
+
+// UPDATE
+message UpdateBedRequest {
+    string id = 1;
+    int64 bed_number = 2;
+    string bed_type = 3;
+    string description = 4;
+    BedStatuS status = 5; 
+}
+message UpdateBedResponse {
+    BedInfo bed = 1;
+}
+
+// DELETE
+message DeleteBedRequest {
+    string id = 1;
+}
+message DeleteBedResponse {
+    int64 status = 1; // 204 = deleted
+}
+
+message Timestamps1 {
+    google.protobuf.Timestamp created_at = 1;
+    google.protobuf.Timestamp updated_at = 2;
+    bool is_deleted = 3;
+}

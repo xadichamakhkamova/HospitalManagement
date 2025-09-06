@@ -1,0 +1,95 @@
+syntax="proto3";
+
+option go_package = "./genproto/patientpb";
+
+import "google/protobuf/timestamp.proto";                 
+
+// ---------------- Service ----------------
+service PatientManagementService {
+     // Patient Management
+    rpc CreatePatient(CreatePatientRequest) returns (CreatePatientResponse);
+    rpc GetPatientById(GetPatientByIdRequest) returns (GetPatientByIdResponse);
+    rpc ListPatient(ListPatientsRequest) returns (ListPatientsResponse);
+    rpc UpdatePatient(UpdatePatientRequest) returns (UpdatePatientResponse);
+    rpc DeletePatient(DeletePatientRequest) returns (DeletePatientResponse);
+}
+
+message Patient {
+    string id = 1;
+    string full_name = 2;
+    string email = 3;
+    string password = 4;
+    string address = 5;
+    string phone_number = 6;
+    string gender = 7;
+    string birth_date = 8;
+    string blood_group = 9;
+    Timestamps4 timestamps = 10;
+}
+
+// ---------------- Patient CRUD ----------------
+//CREATE
+message CreatePatientRequest {
+    string full_name = 1;
+    string email = 2;
+    string password = 3;
+    string address = 4;
+    string phone_number = 5;
+    string gender = 6;
+    string birth_date = 7;
+    string blood_group = 8;
+}
+message CreatePatientResponse {
+    Patient patient = 1;
+}
+
+//GET BY ID
+message GetPatientByIdRequest {
+    string id = 1;
+}
+message GetPatientByIdResponse {
+    Patient patient = 1;
+}
+
+//LIST
+message ListPatientsRequest {
+    string search = 1;        // name, email
+    string gender = 2;        // filtr (example: Male/Female)
+    int32 page = 3;
+    int32 limit = 4;
+}
+message ListPatientsResponse {
+    repeated Patient patients = 1;
+    int32 total_count = 2;
+}
+
+//UPDATE
+message UpdatePatientRequest {
+    string id = 1;
+    string full_name = 2;
+    string email = 3;
+    string password = 4;
+    string address = 5;
+    string phone_number = 6;
+    string gender = 7;
+    string birth_date = 8;
+    string blood_group = 9;
+    Timestamps4 timestamps = 10;
+}
+message UpdatePatientResponse {
+    Patient patient = 1;
+}
+
+//DELETE
+message DeletePatientRequest {
+    string id = 1;
+}
+message DeletePatientResponse {
+    int64 status = 1; // 204 = deleted
+}
+
+message Timestamps4 {
+    google.protobuf.Timestamp created_at = 1;
+    google.protobuf.Timestamp updated_at = 2;
+    bool is_deleted = 3;
+}
