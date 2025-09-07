@@ -45,7 +45,7 @@ message MedicineCategory {
     string id = 1;
     string name = 2;
     string description = 3;
-    Timestamps5 timestamps = 4;
+    Timestamps5 timestamps = 5;
 }
 
 // ---------------- Medicine CRUD ----------------
@@ -130,6 +130,7 @@ message ListMedicineCategoriesRequest {
 }
 message ListMedicineCategoriesResponse {
     repeated MedicineCategory categories = 1;
+    int64 total_count = 2; 
 }
 
 //UPDATE
