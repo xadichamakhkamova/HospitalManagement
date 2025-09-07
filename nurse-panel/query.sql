@@ -143,3 +143,89 @@ WHERE id = $1
 RETURNING 
     last_checkup_date,
     (weight >= 50 AND health_condition = 'HEALTHY') AS is_eligible;
+
+
+---------------- Bed Management----------------
+
+-- name: AssignPatientToBed :one
+INSERT INTO bed_management 
+    (
+        bed_id, 
+        patient_id, 
+        status
+    )
+VALUES ($1, $2, 'BED_OCCUPIED')
+RETURNING 
+    id, 
+    bed_id, 
+    patient_id, 
+    status, 
+    assigned_at, 
+    updated_at;
+
+-- name: ReleaseBed :one
+UPDATE bed_management
+SET 
+    status = 'BED_AVAILABLE', 
+    updated_at = NOW()
+WHERE bed_id = $1 
+    AND status = 'BED_OCCUPIED'
+RETURNING 
+    id, 
+    bed_id, 
+    patient_id, 
+    status, 
+    assigned_at, 
+    updated_at;
+
+-- name: ReserveBed :one
+INSERT INTO bed_management 
+    (
+        bed_id, 
+        patient_id, 
+        status
+    )
+VALUES ($1, $2, 'BED_RESERVED')
+RETURNING 
+    id, 
+    bed_id, 
+    patient_id, 
+    status, 
+    assigned_at, 
+    updated_at;
+
+-- name: GetBedById :one
+SELECT 
+    id,
+    bed_id,
+    patient_id,
+    status,
+    assigned_at,
+    updated_at
+FROM bed_management
+WHERE bed_id = $1
+ORDER BY 
+    updated_at DESC
+LIMIT 1;
+
+-- name: ListBeds :many
+SELECT 
+    id,
+    bed_id,
+    patient_id,
+    status,
+    assigned_at,
+    updated_at,
+    COUNT(*) OVER() AS total_count
+FROM 
+    bed_management
+WHERE 
+    (  
+        :search IS NULL
+        OR LOWER(status) LIKE LOWER(CONCAT('%', :search, '%'))
+    ) 
+ORDER BY 
+    updated_at DESC 
+LIMIT :limit
+OFFSET (:page - 1) * :limit; 
+

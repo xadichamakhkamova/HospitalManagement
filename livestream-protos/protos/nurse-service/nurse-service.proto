@@ -45,13 +45,13 @@ message PatientDonor {
     Timestamps3 timestamps = 17;
 }
 
-message Bed {
+message BedManagement {
     string id = 1;
-    int64 bed_number = 2;
-    string bed_type = 3;
-    string description = 4;
+    string bed_id = 2;
+    string patient_id = 3;
     BedStatus status = 5; 
-    Timestamps3 timestamps = 6;
+    google.protobuf.Timestamp assigned_at=6;
+    google.protobuf.Timestamp updated_at=7;
 }
 
 enum BedStatus {
@@ -155,7 +155,7 @@ message AssignPatientToBedRequest {
 }
 
 message AssignPatientToBedResponse {
-    Bed bed = 1;
+    BedManagement bed = 1;
 }
 
 //RELEASE 
@@ -163,7 +163,7 @@ message ReleaseBedRequest {
     string bed_id = 1;
 }
 message ReleaseBedResponse {
-    Bed bed = 1;
+    BedManagement bed = 1;
 }
 
 //RESERVE BED
@@ -172,7 +172,7 @@ message ReserveBedRequest {
     string patient_id = 2;
 }
 message ReserveBedResponse {
-    Bed bed = 1;
+    BedManagement bed = 1;
 }
 
 //GET BY ID
@@ -180,19 +180,18 @@ message GetBedByIdRequest {
     string bed_id = 1;
 }
 message GetBedByIdResponse {
-    Bed bed = 1;
+    BedManagement bed = 1;
 }
 
 //LIST
 message ListBedsRequest {
     BedStatus status = 1;
-    string bed_type = 2; //filter by bed type (ICU, General..)
     int32 page = 3;
     int32 limit = 4;
 
 }
 message ListBedsResponse {
-    repeated Bed beds = 1;
+    repeated BedManagement beds = 1;
     int32 total_count = 2;
 }
 

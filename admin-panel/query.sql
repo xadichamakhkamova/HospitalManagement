@@ -40,8 +40,9 @@ SELECT
     COUNT(*) OVER() AS total_count 
 FROM 
     departments 
-WHERE deleted_at IS NULL AND
-    (:search IS NULL
+WHERE deleted_at IS NULL 
+    AND (   
+        :search IS NULL
         OR LOWER(name) LIKE LOWER(CONCAT('%', :search, '%'))
     ) 
 ORDER BY 
