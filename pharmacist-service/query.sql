@@ -72,6 +72,7 @@ SET
     price = $5,
     company = $6,
     status =$7,
+    updated_at=$8
 WHERE id = $1
     AND deleted_at IS NULL
 RETURNING
@@ -142,6 +143,7 @@ SET
     name = $2,
     category = $3,
     description = $4,
+    updated_at=$5
 WHERE id=$1
     AND deleted_at IS NULL
 RETURNING
