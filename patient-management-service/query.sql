@@ -9,7 +9,7 @@ INSERT INTO patients
         address,
         phone_number,
         gender,
-        birtd_date,
+        birth_date,
         blood_group
     )
 VALUES($1, $2, $3, $4, $5, $6, $7, $8)
@@ -21,7 +21,7 @@ RETURNING
     address,
     phone_number,
     gender,
-    birtd_date,
+    birth_date,
     blood_group,
     created_at,
     updated_at;
@@ -35,7 +35,7 @@ SELECT
     address,
     phone_number,
     gender,
-    birtd_date,
+    birth_date,
     blood_group,
     created_at,
     updated_at 
@@ -53,7 +53,7 @@ SELECT
     address,
     phone_number,
     gender,
-    birtd_date,
+    birth_date,
     blood_group,
     created_at,
     updated_at,
@@ -81,7 +81,7 @@ SET
     address=$5,
     phone_number=$6,
     gender=$7,
-    birtd_date=$8,
+    birth_date=$8,
     blood_group=$9,
     updated_at=$10 
 WHERE id=$1
