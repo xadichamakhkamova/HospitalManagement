@@ -60,8 +60,10 @@ FROM
     patients
 WHERE  
     deleted_at IS NULL
-    (:search IS NULL OR
-        LOWER(gender) LIKE LOWER(CONCAT('%' :search, '%'))
+    (:search IS NULL 
+        OR LOWER(full_name) LIKE LOWER(CONCAT('%', :search, '%')) 
+        OR LOWER(email) LIKE LOWER(CONCAT('%', :search, '%')) 
+        OR LOWER(gender) LIKE LOWER(CONCAT('%' :search, '%'))
     )
 ORDER BY 
     created_at DESC 

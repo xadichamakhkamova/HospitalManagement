@@ -114,7 +114,6 @@ message UpdateDonorRequest {
     string blood_group = 9;
     double weight = 10;
     string health_conditions = 11;
-    string donation_location = 12;
 }
 message UpdateDonorResponse {
     PatientDonor donor = 1;
@@ -200,5 +199,4 @@ message ListBedsResponse {
 message Timestamps3 {
     google.protobuf.Timestamp created_at = 1;
     google.protobuf.Timestamp updated_at = 2;
-    bool is_deleted = 3;
 }

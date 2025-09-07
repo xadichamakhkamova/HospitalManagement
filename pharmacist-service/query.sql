@@ -52,10 +52,10 @@ FROM
     medicines
 WHERE
     deleted_at IS NULL
-    (:search IS NULL OR -- :search - frontenddan kelgan parametr. NULL bolsa, barcha datalarni qaytaradi. Agar bosh bolmasa name, category, company ustunlarida qidirishni boshlaydi.
-        LOWER(name) LIKE LOWER(CONCAT('%', :search, '%')) OR --LOWER - barcha harflarni kichkina qilib oladi. 
-        LOWER(category) LIKE LOWER(CONCAT('%', :search, '%')) OR -- CONCAT('%', :search, '%') - example: %aspirin% qilib qidiradi, yani matn ichida qayerdan bolmasin topadi.
-        LOWER(company) LIKE LOWER(CONCAT('%', :search, '%'))
+    (:search IS NULL  -- :search - frontenddan kelgan parametr. NULL bolsa, barcha datalarni qaytaradi. Agar bosh bolmasa name, category, company ustunlarida qidirishni boshlaydi.
+        OR LOWER(name) LIKE LOWER(CONCAT('%', :search, '%')) --LOWER - barcha harflarni kichkina qilib oladi. 
+        OR LOWER(category) LIKE LOWER(CONCAT('%', :search, '%')) -- CONCAT('%', :search, '%') - example: %aspirin% qilib qidiradi, yani matn ichida qayerdan bolmasin topadi.
+        OR LOWER(company) LIKE LOWER(CONCAT('%', :search, '%'))
     )
     AND (:status IS NULL OR status = :status) -- agar stus NULL bolsa barcha yozuvlar olinadi, bolmasa taqqoslaydi.
 ORDER BY
@@ -129,8 +129,8 @@ FROM
 WHERE 
     deleted_at IS NULL
     (
-        :search IS NULL OR
-        LOWER(name) LIKE LOWER(CONCAT('%', :search, '%'))
+        :search IS NULL 
+        OR LOWER(name) LIKE LOWER(CONCAT('%', :search, '%'))
     )
 ORDER BY
     created_at DESC

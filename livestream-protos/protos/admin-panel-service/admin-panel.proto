@@ -259,5 +259,4 @@ message DeleteBedResponse {
 message Timestamps1 {
     google.protobuf.Timestamp created_at = 1;
     google.protobuf.Timestamp updated_at = 2;
-    bool is_deleted = 3;
 }
