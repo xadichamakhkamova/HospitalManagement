@@ -155,7 +155,7 @@ message GetPersonalByIdResponse {
 
 //LIST
 message ListPersonalsRequest {
-    string search = 1; //profession
+    string search = 1; //profession, full_name
     int32 page = 3;
     int32 limit = 4;
 }
@@ -168,6 +168,7 @@ message GetDoctorByIdResponse {
 }
 message ListDoctorsResponse {
     repeated Doctor doctors = 1;
+    int32 total_count = 2;
 }
 
 //UPDATE
@@ -226,7 +227,7 @@ message GetBedByIDResponse {
 
 // LIST
 message ListBedSRequest {
-    string search = 1;         
+    string search = 1;  //bed_number, bed_tupe
     BedStatuS status = 2;      
     int32 page = 3;
     int32 limit = 4;

@@ -32,6 +32,7 @@ RETURNING
 
 -- name: GetDonorById :one 
 SELECT 
+    id,
     full_name, 
     email,
     password,
@@ -93,7 +94,7 @@ WHERE
 ORDER BY 
     created_at DESC 
 LIMIT :limit
-OFFSET :offset;
+OFFSET (:page - 1) * :limit; 
 
 -- name: UpdateDonor :one 
 UPDATE donors

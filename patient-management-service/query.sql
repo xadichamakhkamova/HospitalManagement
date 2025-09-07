@@ -28,6 +28,7 @@ RETURNING
 
 -- name: GetPatientById :one
 SELECT 
+    id,
     full_name, 
     email,
     password,
@@ -45,6 +46,7 @@ WHERE id=$1
 
 -- name: ListPatients :many
 SELECT
+    id,
     full_name, 
     email,
     password,
@@ -58,9 +60,9 @@ SELECT
     COUNT(*) OVER() AS total_count
 FROM 
     patients
-WHERE  
-    deleted_at IS NULL
-    (:search IS NULL 
+WHERE deleted_at IS NULL
+    AND (
+        :search IS NULL 
         OR LOWER(full_name) LIKE LOWER(CONCAT('%', :search, '%')) 
         OR LOWER(email) LIKE LOWER(CONCAT('%', :search, '%')) 
         OR LOWER(gender) LIKE LOWER(CONCAT('%' :search, '%'))
@@ -68,7 +70,7 @@ WHERE
 ORDER BY 
     created_at DESC 
 LIMIT :limit
-OFFSET :offset;
+OFFSET (:page - 1) * :limit; 
 
 -- name: UpdatePatient :one 
 UPDATE patients

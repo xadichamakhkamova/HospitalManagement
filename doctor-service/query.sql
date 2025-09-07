@@ -49,7 +49,7 @@ WHERE deleted_at IS NULL
     AND (:date IS NULL OR DATE(a.appointment_date) = DATE(:date)) -- DATE() drops minutes
 ORDER BY a.appointment_date DESC
 LIMIT :limit 
-OFFSET :offset;
+OFFSET (:page - 1) * :limit; 
 
 -- name: UpdateAppointment :one
 UPDATE appointments
@@ -124,14 +124,15 @@ SELECT
     pr.medication,
     pr.description,
     pr.created_at,
-    pr.updated_at; 
+    pr.updated_at,
+    COUNT(*) OVER() AS total_count
 FROM prescriptions pr
 JOIN doctors d ON pr.doctor_id = d.id
 JOIN patients p ON pr.patient_id = p.id
 WHERE deleted_at IS NULL 
 ORDER BY created_at DESC
 LIMIT :limit
-OFFSET :offset;  
+OFFSET (:page - 1) * :limit;  
 
 -- name: UpdatePrescription :one 
 UPDATE prescriptions 
