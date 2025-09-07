@@ -102,6 +102,7 @@ message ListDepartmentsRequest {
 }
 message ListDepartmentsResponse {
     repeated Department deparments = 1;
+    int32 total_count = 2;
 }
 
 //UPDATE
@@ -160,6 +161,7 @@ message ListPersonalsRequest {
 }
 message ListPersonalsResponse {
     repeated Personal personals = 1;
+    int32 total_count = 2;
 }
 message GetDoctorByIdResponse {
     Doctor doctor = 1;

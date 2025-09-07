@@ -65,6 +65,7 @@ message ListAppointmentsRequest {
 }
 message ListAppointmentsResponse {
     repeated Appointment appointment = 1;
+    int32 total_count = 2;
 }
 
 //UPDATE
@@ -113,6 +114,7 @@ message ListPrescriptionsRequest{
 }
 message ListPrescriptionsResponse {
     repeated Prescription presc = 1;
+    int32 total_count = 2;
 }
 
 //UPDATE

@@ -194,6 +194,7 @@ message ListBedsRequest {
 }
 message ListBedsResponse {
     repeated Bed beds = 1;
+    int32 total_count = 2;
 }
 
 message Timestamps3 {
