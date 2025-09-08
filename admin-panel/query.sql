@@ -207,7 +207,7 @@ WHERE id = $1
 UPDATE doctors d
 SET 
     department_number = $2,
-    updated_at = NOW()
+    updated_at = $3
 WHERE d.id = $1
   AND d.deleted_at IS NULL
 RETURNING 

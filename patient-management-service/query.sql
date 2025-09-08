@@ -41,7 +41,7 @@ SELECT
     updated_at 
 FROM 
     patients
-WHERE id=$1 
+WHERE id = $1 
     AND deleted_at IS NULL; 
 
 -- name: ListPatients :many
@@ -75,16 +75,16 @@ OFFSET (:page - 1) * :limit;
 -- name: UpdatePatient :one 
 UPDATE patients
 SET 
-    full_name=$2, 
-    email=$3,
-    password=$4,
-    address=$5,
-    phone_number=$6,
-    gender=$7,
-    birth_date=$8,
-    blood_group=$9,
-    updated_at=$10 
-WHERE id=$1
+    full_name = $2, 
+    email = $3,
+    password = $4,
+    address = $5,
+    phone_number = $6,
+    gender = $7,
+    birth_date = $8,
+    blood_group = $9,
+    updated_at = $10 
+WHERE id = $1
     AND deleted_at IS NULL;  
 
 -- name: DeletePatient :exec
