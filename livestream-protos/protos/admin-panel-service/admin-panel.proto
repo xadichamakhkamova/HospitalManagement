@@ -35,11 +35,33 @@ service AdminService {
      rpc DeleteBed(DeleteBedRequest) returns (DeleteBedResponse);
 }
 
+// Bed status enum
 enum BedStatuS {
-    AVAILABLE = 0;
-    OCCUPIED = 1;
-    RESERVED = 2;
-    MAINTENANCE = 3;
+    BED_UNSPECIFIED = 0; // default
+    BED_AVAILABLE = 1;
+    BED_OCCUPIED = 2;
+    BED_RESERVED = 3;
+    BED_MAINTENANCE = 4;
+}
+
+// Profession type
+enum ProfessionType {
+    PROFESSION_TYPE_UNSPECIFIED = 0; // default
+    DOCTOR = 1;
+    NURSE = 2;
+    SURGEON = 3;
+    LAB_ASSISTANT = 4;
+    PHARMACIST = 5;
+    RECEPTIONIST = 6;
+}
+
+// Bed type
+enum BedType {
+    BED_TYPE_UNSPECIFIED = 0; // default
+    GENERAL = 1;   
+    PERSONAL = 2;  
+    ICU = 3;       // reanimatsiya (Intensive Care Unit)
+    SURGICAL = 4;  // jarrohlik bo‘limi
 }
 
 message Department {

@@ -21,8 +21,21 @@ service PharmacistService {
      rpc DeleteMedicineCategory(DeleteMedicineCategoryRequest) returns (DeleteMedicineCategoryResponse);
 }
 
+// Medicine category enum
+enum MedicineCategoryType {
+    MEDICINE_CATEGORY_UNSPECIFIED = 0; // default
+    TABLET = 1;
+    SYRUP = 2;
+    INJECTION = 3;
+    OINTMENT = 4;
+    DROPS = 5;
+    CREAM = 6;
+    CAPSULE = 7;
+}
+
+// Medicine status enum
 enum MedicineStatus {
-    MEDICINE_STATUS_UNSPECIFIED = 0;
+    MEDICINE_STATUS_UNSPECIFIED = 0; // default
     MEDICINE_STATUS_AVAILABLE = 1;
     MEDICINE_STATUS_OUT_OF_STOCK = 2;
     MEDICINE_STATUS_EXPIRED = 3;
@@ -32,7 +45,7 @@ enum MedicineStatus {
 message Medicine {
     string id = 1;
     string name = 2;
-    string category = 3;
+    MedicineCategoryType category = 3;
     string description = 4;
     float price = 5;
     string company = 6;
@@ -43,7 +56,7 @@ message Medicine {
 
 message MedicineCategory {
     string id = 1;
-    string name = 2;
+    MedicineCategoryType name = 2;
     string description = 3;
     Timestamps5 timestamps = 5;
 }
@@ -52,7 +65,7 @@ message MedicineCategory {
 //CREATE
 message CreateMedicineRequest {
     string name = 1;
-    string category = 2;
+    MedicineCategoryType category = 2;
     string description = 3;
     float price = 4;
     string company = 5;
@@ -86,7 +99,7 @@ message ListMedicinesResponse {
 message UpdateMedicineRequest {
     string id = 1;
     string name = 2;
-    string category = 3;
+    MedicineCategoryType category = 3;
     string description = 4;
     float price = 5;
     string company = 6;
@@ -107,7 +120,7 @@ message DeleteMedicineResponse {
 // ---------------- Medicine Category CRUD ----------------
 //CREATE
 message CreateMedicineCategoryRequest {
-    string name = 1;
+    MedicineCategoryType name = 1;
     string description = 2;
 }
 message CreateMedicineCategoryResponse {
@@ -136,7 +149,7 @@ message ListMedicineCategoriesResponse {
 //UPDATE
 message UpdateMedicineCategoryRequest {
     string id = 1;
-    string name = 2;
+    MedicineCategoryType name = 2;
     string description = 3;
 }
 message UpdateMedicineCategoryResponse {

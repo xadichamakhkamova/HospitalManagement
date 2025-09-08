@@ -14,6 +14,26 @@ service PatientManagementService {
     rpc DeletePatient(DeletePatientRequest) returns (DeletePatientResponse);
 }
 
+// Gender enum
+enum GenderType {
+    GENDER_TYPE_UNSPECIFIED = 0; // default
+    MALE = 1;
+    FEMALE = 2;
+}
+
+// Blood group enum
+enum BloodType {
+    BLOOD_TYPE_UNSPECIFIED = 0; // default
+    A_POSITIVE = 1;
+    A_NEGATIVE = 2;
+    B_POSITIVE = 3;
+    B_NEGATIVE = 4;
+    AB_POSITIVE = 5;
+    AB_NEGATIVE = 6;
+    O_POSITIVE = 7;
+    O_NEGATIVE = 8;
+}
+
 message Patient {
     string id = 1;
     string full_name = 2;
@@ -21,9 +41,9 @@ message Patient {
     string password = 4;
     string address = 5;
     string phone_number = 6;
-    string gender = 7;
+    GenderType gender = 7;
     string birth_date = 8;
-    string blood_group = 9;
+    BloodType blood_group = 9;
     Timestamps4 timestamps = 10;
 }
 
@@ -35,9 +55,9 @@ message CreatePatientRequest {
     string password = 3;
     string address = 4;
     string phone_number = 5;
-    string gender = 6;
+    GenderType gender = 6;
     string birth_date = 7;
-    string blood_group = 8;
+    BloodType blood_group = 8;
 }
 message CreatePatientResponse {
     Patient patient = 1;
@@ -71,9 +91,9 @@ message UpdatePatientRequest {
     string password = 4;
     string address = 5;
     string phone_number = 6;
-    string gender = 7;
+    GenderType gender = 7;
     string birth_date = 8;
-    string blood_group = 9;
+    BloodType blood_group = 9;
     Timestamps4 timestamps = 10;
 }
 message UpdatePatientResponse {

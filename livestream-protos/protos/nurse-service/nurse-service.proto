@@ -25,6 +25,24 @@ service NurseService {
     rpc RegisterCheckup(RegisterCheckupRequest) returns (RegisterCheckupResponse);
 }
 
+// Bed status enum
+enum BedStatus {
+    BED_UNSPECIFIED = 0; // default
+    BED_AVAILABLE = 1;
+    BED_OCCUPIED = 2;
+    BED_RESERVED = 3;
+    BED_MAINTENANCE = 4;
+}
+
+// health condition enum
+enum HealthConditionType {
+    HEALTH_CONDITION_TYPE_UNSPECIFIED = 0; // default
+    HEALTHY = 1;
+    STABLE = 2;
+    CRITICAL = 3;
+    RECOVERING = 4;
+}
+
 message PatientDonor {
     string id = 1;
     string full_name = 2;
@@ -52,13 +70,6 @@ message BedManagement {
     BedStatus status = 5; 
     google.protobuf.Timestamp assigned_at=6;
     google.protobuf.Timestamp updated_at=7;
-}
-
-enum BedStatus {
-    BED_AVAILABLE = 0;
-    BED_OCCUPIED = 1;
-    BED_RESERVED = 2;
-    BED_MAINTENANCE = 3;
 }
 
 // ---------------- Donor CRUD ----------------
