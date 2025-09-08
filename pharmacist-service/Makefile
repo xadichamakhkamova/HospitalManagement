@@ -11,4 +11,4 @@ migrate-down:
 	migrate -path ./migrations -database "${DB_URL}" down
 
 migrate-force:
-	migrate -path ./migrations -database "${DB_URL}" -verbose force 1
+	migrate -path ./migrations -database "${DB_URL}" -verbose force 0
