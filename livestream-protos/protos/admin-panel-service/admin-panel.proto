@@ -61,7 +61,7 @@ enum BedType {
     GENERAL = 1;   
     PERSONAL = 2;  
     ICU = 3;       // reanimatsiya (Intensive Care Unit)
-    SURGICAL = 4;  // jarrohlik bo‘limi
+    SURGICAL = 4; 
 }
 
 message Department {
@@ -85,7 +85,8 @@ message Personal {
 
 message Doctor {
     Personal info = 1;
-    int64 department_number = 2;
+    string personal_id = 2;
+    int64 department_number = 3;
 }
 
 message BedInfo {
