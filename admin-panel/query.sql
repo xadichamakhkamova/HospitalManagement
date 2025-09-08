@@ -91,26 +91,17 @@ RETURNING
 -- name: CreateDoctor :one 
 INSERT INTO doctors 
     (
-        profession,
-        full_name,
-        email,
-        password,
-        address,
-        phone_number,
-        department_number,
+    personal_id,
+    department_number
     ) 
-VALUES($1, $2, $3, $4, $5, $6, $7)
+VALUES ($1, $2)
 RETURNING 
     id,
-    profession,
-    full_name,
-    email,
-    password,
-    address,
-    phone_number,
+    personal_id,
     department_number,
     created_at,
-    updated_at; 
+    updated_at;
+
 
 -- name: GetPersonalById :one 
 SELECT 
@@ -130,20 +121,22 @@ WHERE id = $1
 
 -- name: GetDoctorById :one 
 SELECT 
-    id,
-    profession,
-    full_name,
-    email,
-    password,
-    address,
-    phone_number,
-    department_number,
-    created_at,
-    updated_at 
-FROM 
-    doctors
-WHERE id = $1 
-    AND deleted_at IS NULL;  
+    d.id,
+    d.personal_id,
+    p.profession,
+    p.full_name,
+    p.email,
+    p.password,
+    p.address,
+    p.phone_number,
+    d.department_number,
+    d.created_at,
+    d.updated_at
+FROM doctors d
+JOIN personals p ON d.personal_id = p.id
+WHERE d.id = $1
+  AND d.deleted_at IS NULL
+  AND p.deleted_at IS NULL;
 
 -- name: ListPersonals :many
 SELECT 
@@ -172,29 +165,30 @@ OFFSET (:page - 1) * :limit;
 
 -- name: ListDoctors :many
 SELECT 
-    id,
-    profession,
-    full_name,
-    email,
-    password,
-    address,
-    phone_number,
-    department_number,
-    created_at,
-    updated_at ,
-    COUNT(*) OVER() AS total_count 
-FROM 
-    doctors
-WHERE deleted_at IS NULL 
-    AND (
-        :search IS NULL 
-        OR LOWER(profession) LIKE LOWER(CONCAT('%', :search, '%'))
-        OR LOWER(full_name) LIKE LOWER(CONCAT('%', :search, '%'))
-    ) 
-ORDER BY 
-    created_at DESC 
+    d.id,
+    d.personal_id,
+    p.profession,
+    p.full_name,
+    p.email,
+    p.password,
+    p.address,
+    p.phone_number,
+    d.department_number,
+    d.created_at,
+    d.updated_at,
+    COUNT(*) OVER() AS total_count
+FROM doctors d
+JOIN personals p ON d.personal_id = p.id
+WHERE d.deleted_at IS NULL AND p.deleted_at IS NULL
+  AND (
+      :search IS NULL 
+      OR LOWER(p.profession) LIKE LOWER(CONCAT('%', :search, '%'))
+      OR LOWER(p.full_name) LIKE LOWER(CONCAT('%', :search, '%'))
+  )
+ORDER BY d.created_at DESC
 LIMIT :limit
-OFFSET (:page - 1) * :limit; 
+OFFSET (:page - 1) * :limit;
+
 
 -- name: UpdatePersonal :one
 UPDATE personals
@@ -210,27 +204,27 @@ WHERE id = $1
     AND deleted_at IS NULL;
 
 -- name: UpdateDoctor :one
-UPDATE doctors
+UPDATE doctors d
 SET 
-    profession = $2,
-    full_name = $3,
-    email = $4,
-    password = $5,
-    address = %6,
-    phone_number = %7,
-    department_number = $8,
-    updated_at = %9 
-WHERE id = $1 
-    AND deleted_at IS NULL;
+    department_number = $2,
+    updated_at = NOW()
+WHERE d.id = $1
+  AND d.deleted_at IS NULL
+RETURNING 
+    d.id,
+    d.personal_id,
+    d.department_number,
+    d.created_at,
+    d.updated_at;
 
 -- name: DeletePersonal :exec 
 UPDATE personals 
 SET deleted_at = $2 
 WHERE id = $1;
 
--- name: DeleteDoctors :exec 
+-- name: DeleteDoctor :exec
 UPDATE doctors
-SET deleted_at = $2 
+SET deleted_at = $2
 WHERE id = $1;
 
 ---------------- BED CRUD ----------------
