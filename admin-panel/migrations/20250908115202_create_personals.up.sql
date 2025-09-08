@@ -1,12 +1,3 @@
-CREATE TYPE profession_type AS ENUM (
-    'DOCTOR',
-    'NURSE',
-    'SURGEON'
-    'LAB_ASSISTANT',
-    'PHARMACIST',
-    'RECEPTIONIST'
-);
-
 CREATE TABLE IF NOT EXISTS personals (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     profession profession_type NOT NULL,    

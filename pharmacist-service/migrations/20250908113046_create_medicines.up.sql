@@ -1,14 +1,6 @@
-CREATE TYPE medicine_status AS ENUM (
-    'MEDICINE_STATUS_UNSPECIFIED',
-    'MEDICINE_STATUS_AVAILABLE',
-    'MEDICINE_STATUS_OUT_OF_STOCK',
-    'MEDICINE_STATUS_EXPIRED',
-    'MEDICINE_STATUS_DISCONTINUED'
-);
-
 CREATE TABLE IF NOT EXISTS medicines(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    category medicines_category NOT NULL,
+    category medicine_category NOT NULL,
     description TEXT NOT NULL,
     price NUMERIC(10,2) NOT NULL,
     company VARCHAR(24) NOT NULL,
