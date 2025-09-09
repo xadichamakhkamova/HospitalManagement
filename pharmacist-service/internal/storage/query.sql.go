@@ -40,7 +40,7 @@ type CreateMedicineParams struct {
 	Name        string
 	Category    MedicineCategory
 	Description string
-	Price       string
+	Price       float64
 	Company     string
 	Status      MedicineStatus
 }
@@ -50,7 +50,7 @@ type CreateMedicineRow struct {
 	Name        string
 	Category    MedicineCategory
 	Description string
-	Price       string
+	Price       float64
 	Company     string
 	Status      MedicineStatus
 	CreatedAt   sql.NullTime
@@ -179,7 +179,7 @@ type GetMedicineByIdRow struct {
 	Category  MedicineCategory
 	Company   string
 	Status    MedicineStatus
-	Price     string
+	Price     float64
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
 }
@@ -339,7 +339,7 @@ type ListMedicinesRow struct {
 	Category   MedicineCategory
 	Company    string
 	Status     MedicineStatus
-	Price      string
+	Price      float64
 	CreatedAt  sql.NullTime
 	UpdatedAt  sql.NullTime
 	TotalCount int64
@@ -413,7 +413,7 @@ type UpdateMedicineParams struct {
 	Name        string
 	Category    MedicineCategory
 	Description string
-	Price       string
+	Price       float64
 	Company     string
 	Status      MedicineStatus
 	UpdatedAt   sql.NullTime
@@ -424,7 +424,7 @@ type UpdateMedicineRow struct {
 	Name        string
 	Category    MedicineCategory
 	Description string
-	Price       string
+	Price       float64
 	Company     string
 	Status      MedicineStatus
 	CreatedAt   sql.NullTime

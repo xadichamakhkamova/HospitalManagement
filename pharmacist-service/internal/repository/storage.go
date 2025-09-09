@@ -3,13 +3,10 @@ package repository
 import (
 	"context"
 	"database/sql"
-	pb "github.com/xadichamakhkamova/HospitalContracts/genproto/pharmacistpb"
 	"pharmacist-service/internal/storage"
-	//"pharmacist-service/logger"
-	"strconv"
-	"time"
 
-	"github.com/google/uuid"
+	pb "github.com/xadichamakhkamova/HospitalContracts/genproto/pharmacistpb"
+	//"pharmacist-service/logger"
 )
 
 type PharmaREPO struct {
@@ -21,10 +18,5 @@ func NewPharmaSqlc(db *sql.DB) *storage.Queries {
 }
 
 func (q *PharmaREPO) CreateMedicine(ctx context.Context, req *pb.CreateMedicineRequest) (*pb.CreateMedicineResponse, error) {
-	resp, err := q.queries.CreateMedicine(ctx, storage.CreateMedicineParams{
-		Name: req.Name,
-		Category: storage.MedicineCategory(req.Category),
-		Description: req.Description,
-		Price: ,
-	})
+	resp, err := q.queries.
 }

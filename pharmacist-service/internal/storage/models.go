@@ -8,9 +8,278 @@ import (
 	"database/sql"
 	"database/sql/driver"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 )
+
+type BedStatus string
+
+const (
+	BedStatusBEDSTATUSAVAILABLE   BedStatus = "BED_STATUS_AVAILABLE"
+	BedStatusBEDSTATUSOCCUPIED    BedStatus = "BED_STATUS_OCCUPIED"
+	BedStatusBEDSTATUSRESERVED    BedStatus = "BED_STATUS_RESERVED"
+	BedStatusBEDSTATUSMAINTENANCE BedStatus = "BED_STATUS_MAINTENANCE"
+)
+
+func (e *BedStatus) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = BedStatus(s)
+	case string:
+		*e = BedStatus(s)
+	default:
+		return fmt.Errorf("unsupported scan type for BedStatus: %T", src)
+	}
+	return nil
+}
+
+type NullBedStatus struct {
+	BedStatus BedStatus
+	Valid     bool // Valid is true if BedStatus is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullBedStatus) Scan(value interface{}) error {
+	if value == nil {
+		ns.BedStatus, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.BedStatus.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullBedStatus) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.BedStatus), nil
+}
+
+type BedType string
+
+const (
+	BedTypeGENERAL  BedType = "GENERAL"
+	BedTypePERSONAL BedType = "PERSONAL"
+	BedTypeICU      BedType = "ICU"
+	BedTypeSURGICAL BedType = "SURGICAL"
+)
+
+func (e *BedType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = BedType(s)
+	case string:
+		*e = BedType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for BedType: %T", src)
+	}
+	return nil
+}
+
+type NullBedType struct {
+	BedType BedType
+	Valid   bool // Valid is true if BedType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullBedType) Scan(value interface{}) error {
+	if value == nil {
+		ns.BedType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.BedType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullBedType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.BedType), nil
+}
+
+type BloodType string
+
+const (
+	BloodTypeAPOSITIVE  BloodType = "A_POSITIVE"
+	BloodTypeANEGATIVE  BloodType = "A_NEGATIVE"
+	BloodTypeBPOSITIVE  BloodType = "B_POSITIVE"
+	BloodTypeBNEGATIVE  BloodType = "B_NEGATIVE"
+	BloodTypeABPOSITIVE BloodType = "AB_POSITIVE"
+	BloodTypeABNEGATIVE BloodType = "AB_NEGATIVE"
+	BloodTypeOPOSITIVE  BloodType = "O_POSITIVE"
+	BloodTypeONEGATIVE  BloodType = "O_NEGATIVE"
+)
+
+func (e *BloodType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = BloodType(s)
+	case string:
+		*e = BloodType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for BloodType: %T", src)
+	}
+	return nil
+}
+
+type NullBloodType struct {
+	BloodType BloodType
+	Valid     bool // Valid is true if BloodType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullBloodType) Scan(value interface{}) error {
+	if value == nil {
+		ns.BloodType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.BloodType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullBloodType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.BloodType), nil
+}
+
+type GenderType string
+
+const (
+	GenderTypeMALE   GenderType = "MALE"
+	GenderTypeFEMALE GenderType = "FEMALE"
+)
+
+func (e *GenderType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = GenderType(s)
+	case string:
+		*e = GenderType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for GenderType: %T", src)
+	}
+	return nil
+}
+
+type NullGenderType struct {
+	GenderType GenderType
+	Valid      bool // Valid is true if GenderType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullGenderType) Scan(value interface{}) error {
+	if value == nil {
+		ns.GenderType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.GenderType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullGenderType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.GenderType), nil
+}
+
+type HealthCondition string
+
+const (
+	HealthConditionHEALTHY        HealthCondition = "HEALTHY"
+	HealthConditionMINORILLNESS   HealthCondition = "MINOR_ILLNESS"
+	HealthConditionCHRONICDISEASE HealthCondition = "CHRONIC_DISEASE"
+	HealthConditionCRITICAL       HealthCondition = "CRITICAL"
+	HealthConditionRECOVERING     HealthCondition = "RECOVERING"
+)
+
+func (e *HealthCondition) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = HealthCondition(s)
+	case string:
+		*e = HealthCondition(s)
+	default:
+		return fmt.Errorf("unsupported scan type for HealthCondition: %T", src)
+	}
+	return nil
+}
+
+type NullHealthCondition struct {
+	HealthCondition HealthCondition
+	Valid           bool // Valid is true if HealthCondition is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullHealthCondition) Scan(value interface{}) error {
+	if value == nil {
+		ns.HealthCondition, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.HealthCondition.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullHealthCondition) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.HealthCondition), nil
+}
+
+type HealthConditionType string
+
+const (
+	HealthConditionTypeHEALTHY           HealthConditionType = "HEALTHY"
+	HealthConditionTypeMINORILLNESS      HealthConditionType = "MINOR_ILLNESS"
+	HealthConditionTypeCHRONICDISEASE    HealthConditionType = "CHRONIC_DISEASE"
+	HealthConditionTypeCRITICALCONDITION HealthConditionType = "CRITICAL_CONDITION"
+	HealthConditionTypeRECOVERING        HealthConditionType = "RECOVERING"
+)
+
+func (e *HealthConditionType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = HealthConditionType(s)
+	case string:
+		*e = HealthConditionType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for HealthConditionType: %T", src)
+	}
+	return nil
+}
+
+type NullHealthConditionType struct {
+	HealthConditionType HealthConditionType
+	Valid               bool // Valid is true if HealthConditionType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullHealthConditionType) Scan(value interface{}) error {
+	if value == nil {
+		ns.HealthConditionType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.HealthConditionType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullHealthConditionType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.HealthConditionType), nil
+}
 
 type MedicineCategory string
 
@@ -104,12 +373,127 @@ func (ns NullMedicineStatus) Value() (driver.Value, error) {
 	return string(ns.MedicineStatus), nil
 }
 
+type ProfessionType string
+
+const (
+	ProfessionTypeDOCTOR              ProfessionType = "DOCTOR"
+	ProfessionTypeNURSE               ProfessionType = "NURSE"
+	ProfessionTypeSURGEONLABASSISTANT ProfessionType = "SURGEONLAB_ASSISTANT"
+	ProfessionTypePHARMACIST          ProfessionType = "PHARMACIST"
+	ProfessionTypeRECEPTIONIST        ProfessionType = "RECEPTIONIST"
+)
+
+func (e *ProfessionType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = ProfessionType(s)
+	case string:
+		*e = ProfessionType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for ProfessionType: %T", src)
+	}
+	return nil
+}
+
+type NullProfessionType struct {
+	ProfessionType ProfessionType
+	Valid          bool // Valid is true if ProfessionType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullProfessionType) Scan(value interface{}) error {
+	if value == nil {
+		ns.ProfessionType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.ProfessionType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullProfessionType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.ProfessionType), nil
+}
+
+type Appointment struct {
+	ID              uuid.UUID
+	DoctorID        uuid.UUID
+	PatientID       uuid.UUID
+	AppointmentDate time.Time
+	CreatedAt       sql.NullTime
+	UpdatedAt       sql.NullTime
+	DeletedAt       sql.NullTime
+}
+
+type Bed struct {
+	ID          uuid.UUID
+	BedNumber   int64
+	BedType     BedType
+	Description string
+	Status      BedStatus
+	CreatedAt   sql.NullTime
+	UpdatedAt   sql.NullTime
+	DeletedAt   sql.NullTime
+}
+
+type BedManagement struct {
+	ID         uuid.UUID
+	BedID      uuid.UUID
+	PatientID  uuid.UUID
+	Status     BedStatus
+	AssignedAt sql.NullTime
+	UpdatedAt  sql.NullTime
+}
+
+type Department struct {
+	ID          uuid.UUID
+	Name        string
+	Number      int32
+	Description sql.NullString
+	CreatedAt   sql.NullTime
+	UpdatedAt   sql.NullTime
+	DeletedAt   sql.NullTime
+}
+
+type Doctor struct {
+	ID               uuid.UUID
+	PersonalID       uuid.UUID
+	DepartmentNumber int64
+	CreatedAt        sql.NullTime
+	UpdatedAt        sql.NullTime
+	DeletedAt        sql.NullTime
+}
+
+type Donor struct {
+	ID               uuid.UUID
+	FullName         string
+	Email            string
+	Password         string
+	Address          string
+	PhoneNumber      string
+	Gender           GenderType
+	BirthDate        time.Time
+	BloodGroup       BloodType
+	Weight           int16
+	HealthCondition  HealthConditionType
+	LastDonation     sql.NullTime
+	DonationCount    sql.NullInt32
+	LastCheckupDate  sql.NullTime
+	DonationLocation sql.NullString
+	CreatedAt        sql.NullTime
+	UpdatedAt        sql.NullTime
+	DeletedAt        sql.NullTime
+}
+
 type Medicine struct {
 	ID          uuid.UUID
 	Name        string
 	Category    MedicineCategory
 	Description string
-	Price       string
+	Price       float64
 	Company     string
 	Status      MedicineStatus
 	CreatedAt   sql.NullTime
@@ -121,6 +505,46 @@ type MedicinesCategory struct {
 	ID          uuid.UUID
 	Name        MedicineCategory
 	Description string
+	CreatedAt   sql.NullTime
+	UpdatedAt   sql.NullTime
+	DeletedAt   sql.NullTime
+}
+
+type Patient struct {
+	ID          uuid.UUID
+	FullName    string
+	Email       string
+	Password    string
+	Address     string
+	PhoneNumber string
+	Gender      GenderType
+	BirthDate   time.Time
+	BloodGroup  BloodType
+	CreatedAt   sql.NullTime
+	UpdatedAt   sql.NullTime
+	DeletedAt   sql.NullTime
+}
+
+type Personal struct {
+	ID          uuid.UUID
+	Profession  ProfessionType
+	FullName    string
+	Email       string
+	Password    string
+	Address     sql.NullString
+	PhoneNumber sql.NullString
+	CreatedAt   sql.NullTime
+	UpdatedAt   sql.NullTime
+	DeletedAt   sql.NullTime
+}
+
+type Prescription struct {
+	ID          uuid.UUID
+	DoctorID    uuid.UUID
+	PatientID   uuid.UUID
+	CaseHistory string
+	Medication  string
+	Description sql.NullString
 	CreatedAt   sql.NullTime
 	UpdatedAt   sql.NullTime
 	DeletedAt   sql.NullTime
