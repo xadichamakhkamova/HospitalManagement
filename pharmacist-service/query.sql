@@ -31,7 +31,7 @@ SELECT
     status,
     price,
     created_at,
-    updated_at, 
+    updated_at
 FROM 
     medicines
 WHERE id=$1
@@ -52,16 +52,16 @@ FROM
     medicines
 WHERE deleted_at IS NULL
     AND (
-        :search IS NULL  -- :search - frontenddan kelgan parametr. NULL bolsa, barcha datalarni qaytaradi. Agar bosh bolmasa name, category, company ustunlarida qidirishni boshlaydi.
-        OR LOWER(name) LIKE LOWER(CONCAT('%', :search, '%')) --LOWER - barcha harflarni kichkina qilib oladi. 
-        OR LOWER(category) LIKE LOWER(CONCAT('%', :search, '%')) -- CONCAT('%', :search, '%') - example: %aspirin% qilib qidiradi, yani matn ichida qayerdan bolmasin topadi.
-        OR LOWER(company) LIKE LOWER(CONCAT('%', :search, '%'))
+        $1::search IS NULL  -- :search - frontenddan kelgan parametr. NULL bolsa, barcha datalarni qaytaradi. Agar bosh bolmasa name, category, company ustunlarida qidirishni boshlaydi.
+        OR LOWER(name) LIKE LOWER(CONCAT('%', $1::search, '%')) --LOWER - barcha harflarni kichkina qilib oladi. 
+        OR LOWER(category) LIKE LOWER(CONCAT('%', $1::search, '%')) -- CONCAT('%', :search, '%') - example: %aspirin% qilib qidiradi, yani matn ichida qayerdan bolmasin topadi.
+        OR LOWER(company) LIKE LOWER(CONCAT('%', $1::search, '%'))
     )
-    AND (:status IS NULL OR status = :status) -- agar stus NULL bolsa barcha yozuvlar olinadi, bolmasa taqqoslaydi.
+    AND ($2::status IS NULL OR status = $2::status) -- agar stus NULL bolsa barcha yozuvlar olinadi, bolmasa taqqoslaydi.
 ORDER BY
     created_at DESC -- yaratilgan sana boyicha teskari tartibda chiqaradi, natijada eng yangilari birinchi chiqadi.
-LIMIT :limit -- faqat n ta row olinadi
-OFFSET (:page - 1) * :limit; ; --m ta row o‘tkazib, keyingilarini oladi
+LIMIT $3 -- faqat n ta row olinadi
+OFFSET ($4 - 1) * $3; ; --m ta row o‘tkazib, keyingilarini oladi
 
 -- name: UpdateMedicine :one
 UPDATE medicines
@@ -94,7 +94,7 @@ WHERE id = $1;
 ---------------- Medicine Category CRUD ----------------
 
 -- name: CreateMedicineCategory :one
-INSERT INTO medicine_categories
+INSERT INTO medicines_category
     (
         name,
         description
@@ -113,9 +113,9 @@ SELECT
     name,
     description,
     created_at,
-    updated_at,
+    updated_at
 FROM 
-    medicine_categories
+    medicines_category
 WHERE id=$1;
 
 -- name: ListMedicineCategories :many
@@ -127,24 +127,23 @@ SELECT
     updated_at,
     COUNT(*) OVER() AS total_count
 FROM 
-    medicine_categories
+    medicines_category
 WHERE deleted_at IS NULL
     AND (
-        :search IS NULL 
-        OR LOWER(name) LIKE LOWER(CONCAT('%', :search, '%'))
+        $1::search IS NULL 
+        OR LOWER(name) LIKE LOWER(CONCAT('%', $1::search, '%'))
     )
 ORDER BY
     created_at DESC
-LIMIT :limit 
-OFFSET (:page - 1) * :limit;  
+LIMIT $2 
+OFFSET ($3 - 1) * $2;  
 
 -- name: UpdateMedicineCategory :one 
-UPDATE medicine_categories
+UPDATE medicines_category
 SET 
     name = $2,
-    category = $3,
-    description = $4,
-    updated_at = $5
+    description = $3,
+    updated_at = $4
 WHERE id=$1
     AND deleted_at IS NULL
 RETURNING
@@ -154,7 +153,7 @@ RETURNING
     created_at,
     updated_at;
 
--- name DeleteMedicineCategory :exec
-UPDATE medicine_categories
+-- name: DeleteMedicineCategory :exec
+UPDATE medicines_category
 SET deleted_at = $2
 WHERE id = $1;
