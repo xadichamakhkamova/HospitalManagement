@@ -81,20 +81,20 @@ FROM
 WHERE 
     deleted_at IS NULL
     AND (
-        :search IS NULL 
-        OR LOWER(full_name) LIKE LOWER(CONCAT('%', :search, '%')) 
-        OR LOWER(email) LIKE LOWER(CONCAT('%', :search, '%')) 
-        OR LOWER(gender) LIKE LOWER(CONCAT('%', :search, '%')) 
-        OR LOWER(blood_group) LIKE LOWER(CONCAT('%', :search, '%'))
+        $1::search  IS NULL 
+        OR LOWER(full_name) LIKE LOWER(CONCAT('%', $1::search , '%')) 
+        OR LOWER(email) LIKE LOWER(CONCAT('%', $1::search , '%')) 
+        OR LOWER(gender) LIKE LOWER(CONCAT('%', $1::search , '%')) 
+        OR LOWER(blood_group) LIKE LOWER(CONCAT('%', $1::search , '%'))
     )
     AND (
-        :only_eligible = FALSE 
+        $2::only_eligible = FALSE 
         OR (weight >= 50 AND health_condition = 'HEALTHY') -- if equal to DEFAULT
     )
 ORDER BY 
     created_at DESC 
-LIMIT :limit
-OFFSET (:page - 1) * :limit; 
+LIMIT $3
+OFFSET ($4 - 1) * $3; 
 
 -- name: UpdateDonor :one 
 UPDATE donors
@@ -111,7 +111,21 @@ SET
     health_condition = $11,
     updated_at = $12
 WHERE id = $1
-    AND deleted_at IS NULL;  
+    AND deleted_at IS NULL
+RETURNING
+    id,
+    full_name, 
+    email,
+    password,
+    address,
+    phone_number,
+    gender,
+    birth_date,
+    blood_group,
+    weight,
+    health_condition,
+    created_at,
+    updated_at;  
 
 -- name: DeleteDonor :exec
 UPDATE donors
@@ -221,11 +235,11 @@ FROM
     bed_management
 WHERE 
     (  
-        :search IS NULL
-        OR LOWER(status) LIKE LOWER(CONCAT('%', :search, '%'))
+        $1::search  IS NULL
+        OR LOWER(status) LIKE LOWER(CONCAT('%', $1::search , '%'))
     ) 
 ORDER BY 
     updated_at DESC 
-LIMIT :limit
-OFFSET (:page - 1) * :limit; 
+LIMIT $2
+OFFSET ($3 - 1) * $2; 
 
