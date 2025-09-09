@@ -63,3 +63,10 @@ CREATE TYPE bed_type AS ENUM (
     'SURGICAL'      -- jarrohlik bo‘limi
 );
 
+CREATE TYPE health_condition_type AS ENUM (
+    'HEALTHY',
+    'MINOR_ILLNESS',
+    'CHRONIC_DISEASE',
+    'CRITICAL_CONDITION',
+    'RECOVERING'
+);
