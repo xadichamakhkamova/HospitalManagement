@@ -62,15 +62,15 @@ FROM
     patients
 WHERE deleted_at IS NULL
     AND (
-        :search IS NULL 
-        OR LOWER(full_name) LIKE LOWER(CONCAT('%', :search, '%')) 
-        OR LOWER(email) LIKE LOWER(CONCAT('%', :search, '%')) 
-        OR LOWER(gender) LIKE LOWER(CONCAT('%' :search, '%'))
+        $1::search IS NULL 
+        OR LOWER(full_name) LIKE LOWER(CONCAT('%', $1::search, '%')) 
+        OR LOWER(email) LIKE LOWER(CONCAT('%', $1::search, '%')) 
+        OR LOWER(gender) LIKE LOWER(CONCAT('%', $1::search, '%'))
     )
 ORDER BY 
     created_at DESC 
-LIMIT :limit
-OFFSET (:page - 1) * :limit; 
+LIMIT $2
+OFFSET ($3 - 1) * $2; 
 
 -- name: UpdatePatient :one 
 UPDATE patients
@@ -85,7 +85,19 @@ SET
     blood_group = $9,
     updated_at = $10 
 WHERE id = $1
-    AND deleted_at IS NULL;  
+    AND deleted_at IS NULL
+RETURNING
+    id,
+    full_name, 
+    email,
+    password,
+    address,
+    phone_number,
+    gender,
+    birth_date,
+    blood_group,
+    created_at,
+    updated_at;  
 
 -- name: DeletePatient :exec
 UPDATE patients
