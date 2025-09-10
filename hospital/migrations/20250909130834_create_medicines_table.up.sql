@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS medicines(
     description TEXT NOT NULL,
     price FLOAT NOT NULL,
     company VARCHAR(24) NOT NULL,
-    status medicine_status NOT NULL DEFAULT 'MEDICINE_STATUS_UNSPECIFIED',
+    status medicine_status NOT NULL DEFAULT 'medicine_status_unspecified',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP

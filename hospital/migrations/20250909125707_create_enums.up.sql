@@ -8,65 +8,57 @@ CREATE TYPE medicine_category AS ENUM (
     'capsule'
 );
 
-CREATE TYPE medicine_status AS ENUM (
-    'MEDICINE_STATUS_UNSPECIFIED',
-    'MEDICINE_STATUS_AVAILABLE',
-    'MEDICINE_STATUS_OUT_OF_STOCK',
-    'MEDICINE_STATUS_EXPIRED',
-    'MEDICINE_STATUS_DISCONTINUED'
+create type medicine_status as enum (
+    'medicine_status_unspecified',
+    'medicine_status_available',
+    'medicine_status_out_of_stock',
+    'medicine_status_expired',
+    'medicine_status_discontinued'
 );
 
-CREATE TYPE gender_type AS ENUM (
-    'MALE',
-    'FEMALE'
+create type gender_type as enum (
+    'male',
+    'female'
 );
 
-CREATE TYPE blood_type AS ENUM (
-    'A_POSITIVE',
-    'A_NEGATIVE',
-    'B_POSITIVE',
-    'B_NEGATIVE',
-    'AB_POSITIVE',
-    'AB_NEGATIVE',
-    'O_POSITIVE',
-    'O_NEGATIVE'
+create type blood_type as enum (
+    'a_positive',
+    'a_negative',
+    'b_positive',
+    'b_negative',
+    'ab_positive',
+    'ab_negative',
+    'o_positive',
+    'o_negative'
 );
 
-CREATE TYPE health_condition AS ENUM (
-    'HEALTHY',
-    'MINOR_ILLNESS',
-    'CHRONIC_DISEASE',
-    'CRITICAL',
-    'RECOVERING'
+create type profession_type as enum (
+    'doctor',
+    'nurse',
+    'surgeon',
+    'lab_assistant',
+    'pharmacist',
+    'receptionist'
 );
 
-CREATE TYPE profession_type AS ENUM (
-    'DOCTOR',
-    'NURSE',
-    'SURGEON'
-    'LAB_ASSISTANT',
-    'PHARMACIST',
-    'RECEPTIONIST'
+create type bed_status as enum (
+    'bed_status_available',
+    'bed_status_occupied',
+    'bed_status_reserved',
+    'bed_status_maintenance'
 );
 
-CREATE TYPE bed_status AS ENUM (
-    'BED_STATUS_AVAILABLE',
-    'BED_STATUS_OCCUPIED',
-    'BED_STATUS_RESERVED',
-    'BED_STATUS_MAINTENANCE'
+create type bed_type as enum (
+    'general',      -- oddiy palata
+    'personal',     -- shaxsiy xona
+    'icu',          -- reanimatsiya (intensive care unit)
+    'surgical'      -- jarrohlik bo‘limi
 );
 
-CREATE TYPE bed_type AS ENUM (
-    'GENERAL',      -- oddiy palata
-    'PERSONAL',     -- shaxsiy xona
-    'ICU',          -- reanimatsiya (Intensive Care Unit)
-    'SURGICAL'      -- jarrohlik bo‘limi
-);
-
-CREATE TYPE health_condition_type AS ENUM (
-    'HEALTHY',
-    'MINOR_ILLNESS',
-    'CHRONIC_DISEASE',
-    'CRITICAL_CONDITION',
-    'RECOVERING'
+create type health_condition_type as enum (
+    'healthy',
+    'minor_illness',
+    'chronic_disease',
+    'critical_condition',
+    'recovering'
 );
