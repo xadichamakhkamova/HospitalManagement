@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	config "patient-service/internal/config"
+	config "doctor-service/internal/config"
 	"database/sql"
 	"fmt"
 

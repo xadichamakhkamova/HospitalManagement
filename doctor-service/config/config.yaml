@@ -1,0 +1,19 @@
+service:
+  host: localhost
+  port: 8003
+
+postgres:
+  host: localhost
+  port: 5432
+  dbname: debtsdb
+  user: postgres
+  password: 1403
+
+clients:
+  admin-service:
+    host: localhost
+    port: 8002
+  patient-service:
+    host: localhost
+    port: 8004
+ 

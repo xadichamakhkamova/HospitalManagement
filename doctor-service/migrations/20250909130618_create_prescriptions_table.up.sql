@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS prescriptions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    doctor_id UUID NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
-    patient_id UUID NOT NULL REFERENCES patients(id) ON DELETE CASCADE,
+    doctor_id UUID NOT NULL,
+    patient_id UUID NOT NULL,
     case_history TEXT NOT NULL,
     medication TEXT NOT NULL,
     description TEXT,
