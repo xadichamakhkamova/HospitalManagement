@@ -162,6 +162,7 @@ SELECT
     id,
     name,
     category,
+    description,
     company,
     status,
     price,
@@ -174,14 +175,15 @@ WHERE id=$1
 `
 
 type GetMedicineByIdRow struct {
-	ID        uuid.UUID
-	Name      string
-	Category  MedicineCategory
-	Company   string
-	Status    MedicineStatus
-	Price     float64
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+	ID          uuid.UUID
+	Name        string
+	Category    MedicineCategory
+	Description string
+	Company     string
+	Status      MedicineStatus
+	Price       float64
+	CreatedAt   sql.NullTime
+	UpdatedAt   sql.NullTime
 }
 
 func (q *Queries) GetMedicineById(ctx context.Context, id uuid.UUID) (GetMedicineByIdRow, error) {
@@ -191,6 +193,7 @@ func (q *Queries) GetMedicineById(ctx context.Context, id uuid.UUID) (GetMedicin
 		&i.ID,
 		&i.Name,
 		&i.Category,
+		&i.Description,
 		&i.Company,
 		&i.Status,
 		&i.Price,
@@ -304,6 +307,7 @@ SELECT
     id,
     name,
     category,
+    description,
     company,
     status,
     price,
@@ -334,15 +338,16 @@ type ListMedicinesParams struct {
 }
 
 type ListMedicinesRow struct {
-	ID         uuid.UUID
-	Name       string
-	Category   MedicineCategory
-	Company    string
-	Status     MedicineStatus
-	Price      float64
-	CreatedAt  sql.NullTime
-	UpdatedAt  sql.NullTime
-	TotalCount int64
+	ID          uuid.UUID
+	Name        string
+	Category    MedicineCategory
+	Description string
+	Company     string
+	Status      MedicineStatus
+	Price       float64
+	CreatedAt   sql.NullTime
+	UpdatedAt   sql.NullTime
+	TotalCount  int64
 }
 
 func (q *Queries) ListMedicines(ctx context.Context, arg ListMedicinesParams) ([]ListMedicinesRow, error) {
@@ -363,6 +368,7 @@ func (q *Queries) ListMedicines(ctx context.Context, arg ListMedicinesParams) ([
 			&i.ID,
 			&i.Name,
 			&i.Category,
+			&i.Description,
 			&i.Company,
 			&i.Status,
 			&i.Price,

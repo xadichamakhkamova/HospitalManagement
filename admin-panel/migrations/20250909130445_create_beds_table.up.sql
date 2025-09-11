@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS beds(
     bed_number BIGINT NOT NULL,
     bed_type bed_type NOT NULL,
     description TEXT NOT NULL,
-    status bed_status NOT NULL DEFAULT 'bed_status_available',
+    status bed_status NOT NULL DEFAULT 'BED_STATUS_AVAILABLE',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP

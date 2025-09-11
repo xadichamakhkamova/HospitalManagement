@@ -42,22 +42,30 @@ FROM
     departments 
 WHERE deleted_at IS NULL 
     AND (   
-        :search IS NULL
-        OR LOWER(name) LIKE LOWER(CONCAT('%', :search, '%'))
+        $1::search IS NULL
+        OR LOWER(name) LIKE LOWER(CONCAT('%', $1::search, '%'))
     ) 
 ORDER BY 
     created_at DESC 
-LIMIT :limit
-OFFSET (:page - 1) * :limit; 
+LIMIT $2
+OFFSET ($3 - 1) * $2; 
 
 -- name: UpdateDepartment :one 
 UPDATE departments 
 SET 
-    name = $1,
-    number = $2, 
-    description = $3 
+    name = $2,
+    number = $3, 
+    description = $4,
+    updated_at = $5
 WHERE id = $1 
-    AND deleted_at IS NULL;
+    AND deleted_at IS NULL
+RETURNING
+    id,
+    name,
+    number,
+    description,
+    created_at,
+    updated_at; 
 
 -- name: DeleteDepartment :exec
 UPDATE departments
@@ -154,14 +162,14 @@ FROM
     personals 
 WHERE deleted_at IS NULL 
     AND (
-        :search IS NULL 
-        OR LOWER(profession) LIKE LOWER(CONCAT('%', :search, '%'))
-        OR LOWER(full_name) LIKE LOWER(CONCAT('%', :search, '%'))
+        $1::search IS NULL 
+        OR LOWER(profession) LIKE LOWER(CONCAT('%', $1::search, '%'))
+        OR LOWER(full_name) LIKE LOWER(CONCAT('%', $1::search, '%'))
     ) 
 ORDER BY 
     created_at DESC 
-LIMIT :limit
-OFFSET (:page - 1) * :limit; 
+LIMIT $2
+OFFSET ($3 - 1) * $2; 
 
 -- name: ListDoctors :many
 SELECT 
@@ -181,13 +189,13 @@ FROM doctors d
 JOIN personals p ON d.personal_id = p.id
 WHERE d.deleted_at IS NULL AND p.deleted_at IS NULL
   AND (
-      :search IS NULL 
-      OR LOWER(p.profession) LIKE LOWER(CONCAT('%', :search, '%'))
-      OR LOWER(p.full_name) LIKE LOWER(CONCAT('%', :search, '%'))
+      $1::search IS NULL 
+      OR LOWER(p.profession) LIKE LOWER(CONCAT('%', $1::search, '%'))
+      OR LOWER(p.full_name) LIKE LOWER(CONCAT('%', $1::search, '%'))
   )
 ORDER BY d.created_at DESC
-LIMIT :limit
-OFFSET (:page - 1) * :limit;
+LIMIT $2
+OFFSET ($3 - 1) * $2;
 
 
 -- name: UpdatePersonal :one
@@ -197,11 +205,21 @@ SET
     full_name = $3,
     email = $4,
     password = $5,
-    address = %6,
-    phone_number = %7,
-    updated_at = %8
+    address = $6,
+    phone_number = $7,
+    updated_at = $8
 WHERE id = $1 
-    AND deleted_at IS NULL;
+    AND deleted_at IS NULL
+RETURNING
+    id,
+    profession,
+    full_name,
+    email,
+    password,
+    address,
+    phone_number,
+    created_at,
+    updated_at; ;
 
 -- name: UpdateDoctor :one
 UPDATE doctors d
@@ -240,6 +258,7 @@ VALUES($1, $2, $3)
 RETURNING 
     id,
     bed_number,
+    bed_type,
     description,
     status,
     created_at,
@@ -273,15 +292,15 @@ FROM
     beds
 WHERE deleted_at IS NULL 
     AND (
-        :search IS NULL
-        OR LOWER(bed_number::text) LIKE LOWER(CONCAT('%', :search, '%'))
-        OR LOWER(bed_type) LIKE LOWER(CONCAT('%', :search, '%'))
+        $1::search IS NULL
+        OR LOWER(bed_number::text) LIKE LOWER(CONCAT('%', $1::search, '%'))
+        OR LOWER(bed_type) LIKE LOWER(CONCAT('%', $1::search, '%'))
     )
-  AND (:status IS NULL OR status = :status)
+  AND ($2::status IS NULL OR status = $2::status)
 ORDER BY 
     created_at DESC
-LIMIT :limit
-OFFSET (:page - 1) * :limit;
+LIMIT $3
+OFFSET ($4 - 1) * $3;
 
 -- name: UpdateBed :one
 UPDATE beds

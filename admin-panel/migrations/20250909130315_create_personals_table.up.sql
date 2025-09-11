@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS personals (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    profession profession_type NOT NULL,    
+    profession VARCHAR(150) NOT NULL,    
     full_name VARCHAR(150) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
     password TEXT NOT NULL,

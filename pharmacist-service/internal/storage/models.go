@@ -16,10 +16,10 @@ import (
 type BedStatus string
 
 const (
-	BedStatusBEDSTATUSAVAILABLE   BedStatus = "BED_STATUS_AVAILABLE"
-	BedStatusBEDSTATUSOCCUPIED    BedStatus = "BED_STATUS_OCCUPIED"
-	BedStatusBEDSTATUSRESERVED    BedStatus = "BED_STATUS_RESERVED"
-	BedStatusBEDSTATUSMAINTENANCE BedStatus = "BED_STATUS_MAINTENANCE"
+	BedStatusBedStatusAvailable   BedStatus = "bed_status_available"
+	BedStatusBedStatusOccupied    BedStatus = "bed_status_occupied"
+	BedStatusBedStatusReserved    BedStatus = "bed_status_reserved"
+	BedStatusBedStatusMaintenance BedStatus = "bed_status_maintenance"
 )
 
 func (e *BedStatus) Scan(src interface{}) error {
@@ -60,10 +60,10 @@ func (ns NullBedStatus) Value() (driver.Value, error) {
 type BedType string
 
 const (
-	BedTypeGENERAL  BedType = "GENERAL"
-	BedTypePERSONAL BedType = "PERSONAL"
-	BedTypeICU      BedType = "ICU"
-	BedTypeSURGICAL BedType = "SURGICAL"
+	BedTypeGeneral  BedType = "general"
+	BedTypePersonal BedType = "personal"
+	BedTypeIcu      BedType = "icu"
+	BedTypeSurgical BedType = "surgical"
 )
 
 func (e *BedType) Scan(src interface{}) error {
@@ -104,14 +104,14 @@ func (ns NullBedType) Value() (driver.Value, error) {
 type BloodType string
 
 const (
-	BloodTypeAPOSITIVE  BloodType = "A_POSITIVE"
-	BloodTypeANEGATIVE  BloodType = "A_NEGATIVE"
-	BloodTypeBPOSITIVE  BloodType = "B_POSITIVE"
-	BloodTypeBNEGATIVE  BloodType = "B_NEGATIVE"
-	BloodTypeABPOSITIVE BloodType = "AB_POSITIVE"
-	BloodTypeABNEGATIVE BloodType = "AB_NEGATIVE"
-	BloodTypeOPOSITIVE  BloodType = "O_POSITIVE"
-	BloodTypeONEGATIVE  BloodType = "O_NEGATIVE"
+	BloodTypeAPositive  BloodType = "a_positive"
+	BloodTypeANegative  BloodType = "a_negative"
+	BloodTypeBPositive  BloodType = "b_positive"
+	BloodTypeBNegative  BloodType = "b_negative"
+	BloodTypeAbPositive BloodType = "ab_positive"
+	BloodTypeAbNegative BloodType = "ab_negative"
+	BloodTypeOPositive  BloodType = "o_positive"
+	BloodTypeONegative  BloodType = "o_negative"
 )
 
 func (e *BloodType) Scan(src interface{}) error {
@@ -152,8 +152,8 @@ func (ns NullBloodType) Value() (driver.Value, error) {
 type GenderType string
 
 const (
-	GenderTypeMALE   GenderType = "MALE"
-	GenderTypeFEMALE GenderType = "FEMALE"
+	GenderTypeMale   GenderType = "male"
+	GenderTypeFemale GenderType = "female"
 )
 
 func (e *GenderType) Scan(src interface{}) error {
@@ -191,59 +191,14 @@ func (ns NullGenderType) Value() (driver.Value, error) {
 	return string(ns.GenderType), nil
 }
 
-type HealthCondition string
-
-const (
-	HealthConditionHEALTHY        HealthCondition = "HEALTHY"
-	HealthConditionMINORILLNESS   HealthCondition = "MINOR_ILLNESS"
-	HealthConditionCHRONICDISEASE HealthCondition = "CHRONIC_DISEASE"
-	HealthConditionCRITICAL       HealthCondition = "CRITICAL"
-	HealthConditionRECOVERING     HealthCondition = "RECOVERING"
-)
-
-func (e *HealthCondition) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = HealthCondition(s)
-	case string:
-		*e = HealthCondition(s)
-	default:
-		return fmt.Errorf("unsupported scan type for HealthCondition: %T", src)
-	}
-	return nil
-}
-
-type NullHealthCondition struct {
-	HealthCondition HealthCondition
-	Valid           bool // Valid is true if HealthCondition is not NULL
-}
-
-// Scan implements the Scanner interface.
-func (ns *NullHealthCondition) Scan(value interface{}) error {
-	if value == nil {
-		ns.HealthCondition, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.HealthCondition.Scan(value)
-}
-
-// Value implements the driver Valuer interface.
-func (ns NullHealthCondition) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.HealthCondition), nil
-}
-
 type HealthConditionType string
 
 const (
-	HealthConditionTypeHEALTHY           HealthConditionType = "HEALTHY"
-	HealthConditionTypeMINORILLNESS      HealthConditionType = "MINOR_ILLNESS"
-	HealthConditionTypeCHRONICDISEASE    HealthConditionType = "CHRONIC_DISEASE"
-	HealthConditionTypeCRITICALCONDITION HealthConditionType = "CRITICAL_CONDITION"
-	HealthConditionTypeRECOVERING        HealthConditionType = "RECOVERING"
+	HealthConditionTypeHealthy           HealthConditionType = "healthy"
+	HealthConditionTypeMinorIllness      HealthConditionType = "minor_illness"
+	HealthConditionTypeChronicDisease    HealthConditionType = "chronic_disease"
+	HealthConditionTypeCriticalCondition HealthConditionType = "critical_condition"
+	HealthConditionTypeRecovering        HealthConditionType = "recovering"
 )
 
 func (e *HealthConditionType) Scan(src interface{}) error {
@@ -331,11 +286,11 @@ func (ns NullMedicineCategory) Value() (driver.Value, error) {
 type MedicineStatus string
 
 const (
-	MedicineStatusMEDICINESTATUSUNSPECIFIED  MedicineStatus = "MEDICINE_STATUS_UNSPECIFIED"
-	MedicineStatusMEDICINESTATUSAVAILABLE    MedicineStatus = "MEDICINE_STATUS_AVAILABLE"
-	MedicineStatusMEDICINESTATUSOUTOFSTOCK   MedicineStatus = "MEDICINE_STATUS_OUT_OF_STOCK"
-	MedicineStatusMEDICINESTATUSEXPIRED      MedicineStatus = "MEDICINE_STATUS_EXPIRED"
-	MedicineStatusMEDICINESTATUSDISCONTINUED MedicineStatus = "MEDICINE_STATUS_DISCONTINUED"
+	MedicineStatusMedicineStatusUnspecified  MedicineStatus = "medicine_status_unspecified"
+	MedicineStatusMedicineStatusAvailable    MedicineStatus = "medicine_status_available"
+	MedicineStatusMedicineStatusOutOfStock   MedicineStatus = "medicine_status_out_of_stock"
+	MedicineStatusMedicineStatusExpired      MedicineStatus = "medicine_status_expired"
+	MedicineStatusMedicineStatusDiscontinued MedicineStatus = "medicine_status_discontinued"
 )
 
 func (e *MedicineStatus) Scan(src interface{}) error {
@@ -376,11 +331,12 @@ func (ns NullMedicineStatus) Value() (driver.Value, error) {
 type ProfessionType string
 
 const (
-	ProfessionTypeDOCTOR              ProfessionType = "DOCTOR"
-	ProfessionTypeNURSE               ProfessionType = "NURSE"
-	ProfessionTypeSURGEONLABASSISTANT ProfessionType = "SURGEONLAB_ASSISTANT"
-	ProfessionTypePHARMACIST          ProfessionType = "PHARMACIST"
-	ProfessionTypeRECEPTIONIST        ProfessionType = "RECEPTIONIST"
+	ProfessionTypeDoctor       ProfessionType = "doctor"
+	ProfessionTypeNurse        ProfessionType = "nurse"
+	ProfessionTypeSurgeon      ProfessionType = "surgeon"
+	ProfessionTypeLabAssistant ProfessionType = "lab_assistant"
+	ProfessionTypePharmacist   ProfessionType = "pharmacist"
+	ProfessionTypeReceptionist ProfessionType = "receptionist"
 )
 
 func (e *ProfessionType) Scan(src interface{}) error {
