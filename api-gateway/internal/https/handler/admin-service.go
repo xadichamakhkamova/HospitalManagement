@@ -38,7 +38,7 @@ func (h *HandlerST) CreateDepartment(c *gin.Context) {
 	c.JSON(200, resp)
 }
 
-// @Router admin/deparments/{id} [get]
+// @Router /admin/departments/{id} [get]
 // @Summary GET DEPARTMENT BY ID
 // @Security  		BearerAuth
 // @Description This method gets department by id
