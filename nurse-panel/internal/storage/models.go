@@ -16,14 +16,14 @@ import (
 type BloodType string
 
 const (
-	BloodTypeAPositive  BloodType = "a_positive"
-	BloodTypeANegative  BloodType = "a_negative"
-	BloodTypeBPositive  BloodType = "b_positive"
-	BloodTypeBNegative  BloodType = "b_negative"
-	BloodTypeAbPositive BloodType = "ab_positive"
-	BloodTypeAbNegative BloodType = "ab_negative"
-	BloodTypeOPositive  BloodType = "o_positive"
-	BloodTypeONegative  BloodType = "o_negative"
+	BloodTypeAPOSITIVE  BloodType = "A_POSITIVE"
+	BloodTypeANEGATIVE  BloodType = "A_NEGATIVE"
+	BloodTypeBPOSITIVE  BloodType = "B_POSITIVE"
+	BloodTypeBNEGATIVE  BloodType = "B_NEGATIVE"
+	BloodTypeABPOSITIVE BloodType = "AB_POSITIVE"
+	BloodTypeABNEGATIVE BloodType = "AB_NEGATIVE"
+	BloodTypeOPOSITIVE  BloodType = "O_POSITIVE"
+	BloodTypeONEGATIVE  BloodType = "O_NEGATIVE"
 )
 
 func (e *BloodType) Scan(src interface{}) error {
@@ -64,8 +64,8 @@ func (ns NullBloodType) Value() (driver.Value, error) {
 type GenderType string
 
 const (
-	GenderTypeMale   GenderType = "male"
-	GenderTypeFemale GenderType = "female"
+	GenderTypeMALE   GenderType = "MALE"
+	GenderTypeFEMALE GenderType = "FEMALE"
 )
 
 func (e *GenderType) Scan(src interface{}) error {
@@ -106,11 +106,11 @@ func (ns NullGenderType) Value() (driver.Value, error) {
 type HealthConditionType string
 
 const (
-	HealthConditionTypeHealthy           HealthConditionType = "healthy"
-	HealthConditionTypeMinorIllness      HealthConditionType = "minor_illness"
-	HealthConditionTypeChronicDisease    HealthConditionType = "chronic_disease"
-	HealthConditionTypeCriticalCondition HealthConditionType = "critical_condition"
-	HealthConditionTypeRecovering        HealthConditionType = "recovering"
+	HealthConditionTypeHEALTHY           HealthConditionType = "HEALTHY"
+	HealthConditionTypeMINORILLNESS      HealthConditionType = "MINOR_ILLNESS"
+	HealthConditionTypeCHRONICDISEASE    HealthConditionType = "CHRONIC_DISEASE"
+	HealthConditionTypeCRITICALCONDITION HealthConditionType = "CRITICAL_CONDITION"
+	HealthConditionTypeRECOVERING        HealthConditionType = "RECOVERING"
 )
 
 func (e *HealthConditionType) Scan(src interface{}) error {

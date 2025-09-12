@@ -13,11 +13,3 @@ CREATE TYPE blood_type AS ENUM (
     'O_POSITIVE',
     'O_NEGATIVE'
 );
-
-CREATE TYPE health_condition_type AS ENUM (
-    'HEALTHY',
-    'MINOR_ILLNESS',
-    'CHRONIC_DISEASE',
-    'CRITICAL_CONDITION',
-    'RECOVERING'
-);
