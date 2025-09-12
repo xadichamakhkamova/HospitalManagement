@@ -1,6 +1,6 @@
 service:
   host: localhost
-  port: 8005
+  port: 8003
 
 postgres:
   host: localhost

@@ -1,6 +1,6 @@
 service:
   host: localhost
-  port: 8003
+  port: 8002
 
 postgres:
   host: localhost
@@ -12,7 +12,7 @@ postgres:
 clients:
   admin-service:
     host: localhost
-    port: 8002
+    port: 8001
   patient-service:
     host: localhost
     port: 8004
