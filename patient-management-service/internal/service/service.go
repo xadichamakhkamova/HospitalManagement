@@ -28,7 +28,7 @@ func (s *PatientService) GetPatientById(ctx context.Context, req *pb.GetPatientB
 	return s.repo.GetPatientById(ctx, req)
 }
 
-func (s *PatientService) ListDeparments(ctx context.Context, req *pb.ListPatientsRequest) (*pb.ListPatientsResponse, error) {
+func (s *PatientService) ListPatients(ctx context.Context, req *pb.ListPatientsRequest) (*pb.ListPatientsResponse, error) {
 	return s.repo.ListPatients(ctx, req)
 }
 

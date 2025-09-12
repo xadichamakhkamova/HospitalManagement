@@ -13,44 +13,6 @@ import (
 	"github.com/google/uuid"
 )
 
-const assignPatientToBed = `-- name: AssignPatientToBed :one
-
-INSERT INTO bed_management 
-    (
-        bed_id, 
-        patient_id, 
-        status
-    )
-VALUES ($1, $2, 'BED_OCCUPIED')
-RETURNING 
-    id, 
-    bed_id, 
-    patient_id, 
-    status, 
-    assigned_at, 
-    updated_at
-`
-
-type AssignPatientToBedParams struct {
-	BedID     uuid.UUID
-	PatientID uuid.UUID
-}
-
-// -------------- Bed Management----------------
-func (q *Queries) AssignPatientToBed(ctx context.Context, arg AssignPatientToBedParams) (BedManagement, error) {
-	row := q.db.QueryRowContext(ctx, assignPatientToBed, arg.BedID, arg.PatientID)
-	var i BedManagement
-	err := row.Scan(
-		&i.ID,
-		&i.BedID,
-		&i.PatientID,
-		&i.Status,
-		&i.AssignedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const createDonor = `-- name: CreateDonor :one
 
 INSERT INTO donors
@@ -89,11 +51,11 @@ type CreateDonorParams struct {
 	Password        string
 	Address         string
 	PhoneNumber     string
-	Gender          interface{}
+	Gender          GenderType
 	BirthDate       time.Time
-	BloodGroup      interface{}
+	BloodGroup      BloodType
 	Weight          int16
-	HealthCondition interface{}
+	HealthCondition HealthConditionType
 }
 
 type CreateDonorRow struct {
@@ -103,11 +65,11 @@ type CreateDonorRow struct {
 	Password        string
 	Address         string
 	PhoneNumber     string
-	Gender          interface{}
+	Gender          GenderType
 	BirthDate       time.Time
-	BloodGroup      interface{}
+	BloodGroup      BloodType
 	Weight          int16
-	HealthCondition interface{}
+	HealthCondition HealthConditionType
 	CreatedAt       sql.NullTime
 	UpdatedAt       sql.NullTime
 }
@@ -161,35 +123,6 @@ func (q *Queries) DeleteDonor(ctx context.Context, arg DeleteDonorParams) error 
 	return err
 }
 
-const getBedById = `-- name: GetBedById :one
-SELECT 
-    id,
-    bed_id,
-    patient_id,
-    status,
-    assigned_at,
-    updated_at
-FROM bed_management
-WHERE bed_id = $1
-ORDER BY 
-    updated_at DESC
-LIMIT 1
-`
-
-func (q *Queries) GetBedById(ctx context.Context, bedID uuid.UUID) (BedManagement, error) {
-	row := q.db.QueryRowContext(ctx, getBedById, bedID)
-	var i BedManagement
-	err := row.Scan(
-		&i.ID,
-		&i.BedID,
-		&i.PatientID,
-		&i.Status,
-		&i.AssignedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const getDonorById = `-- name: GetDonorById :one
 SELECT 
     id,
@@ -223,15 +156,15 @@ type GetDonorByIdRow struct {
 	Password         string
 	Address          string
 	PhoneNumber      string
-	Gender           interface{}
+	Gender           GenderType
 	BirthDate        time.Time
-	BloodGroup       interface{}
+	BloodGroup       BloodType
 	LastDonation     sql.NullTime
 	DonationCount    sql.NullInt32
 	IsEligible       sql.NullBool
 	LastCheckupDate  sql.NullTime
 	Weight           int16
-	HealthCondition  interface{}
+	HealthCondition  HealthConditionType
 	DonationLocation sql.NullString
 	CreatedAt        sql.NullTime
 	UpdatedAt        sql.NullTime
@@ -261,75 +194,6 @@ func (q *Queries) GetDonorById(ctx context.Context, id uuid.UUID) (GetDonorByIdR
 		&i.UpdatedAt,
 	)
 	return i, err
-}
-
-const listBeds = `-- name: ListBeds :many
-SELECT 
-    id,
-    bed_id,
-    patient_id,
-    status,
-    assigned_at,
-    updated_at,
-    COUNT(*) OVER() AS total_count
-FROM 
-    bed_management
-WHERE 
-    (  
-        $1::search  IS NULL
-        OR LOWER(status) LIKE LOWER(CONCAT('%', $1::search , '%'))
-    ) 
-ORDER BY 
-    updated_at DESC 
-LIMIT $2
-OFFSET ($3 - 1) * $2
-`
-
-type ListBedsParams struct {
-	Column1 interface{}
-	Limit   int32
-	Column3 interface{}
-}
-
-type ListBedsRow struct {
-	ID         uuid.UUID
-	BedID      uuid.UUID
-	PatientID  uuid.UUID
-	Status     interface{}
-	AssignedAt sql.NullTime
-	UpdatedAt  sql.NullTime
-	TotalCount int64
-}
-
-func (q *Queries) ListBeds(ctx context.Context, arg ListBedsParams) ([]ListBedsRow, error) {
-	rows, err := q.db.QueryContext(ctx, listBeds, arg.Column1, arg.Limit, arg.Column3)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []ListBedsRow
-	for rows.Next() {
-		var i ListBedsRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.BedID,
-			&i.PatientID,
-			&i.Status,
-			&i.AssignedAt,
-			&i.UpdatedAt,
-			&i.TotalCount,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
 }
 
 const listDonors = `-- name: ListDonors :many
@@ -388,15 +252,15 @@ type ListDonorsRow struct {
 	Password         string
 	Address          string
 	PhoneNumber      string
-	Gender           interface{}
+	Gender           GenderType
 	BirthDate        time.Time
-	BloodGroup       interface{}
+	BloodGroup       BloodType
 	LastDonation     sql.NullTime
 	DonationCount    sql.NullInt32
 	IsEligible       sql.NullBool
 	LastCheckupDate  sql.NullTime
 	Weight           int16
-	HealthCondition  interface{}
+	HealthCondition  HealthConditionType
 	DonationLocation sql.NullString
 	CreatedAt        sql.NullTime
 	UpdatedAt        sql.NullTime
@@ -508,72 +372,6 @@ func (q *Queries) RegisterDonation(ctx context.Context, arg RegisterDonationPara
 	return i, err
 }
 
-const releaseBed = `-- name: ReleaseBed :one
-UPDATE bed_management
-SET 
-    status = 'BED_AVAILABLE', 
-    updated_at = NOW()
-WHERE bed_id = $1 
-    AND status = 'BED_OCCUPIED'
-RETURNING 
-    id, 
-    bed_id, 
-    patient_id, 
-    status, 
-    assigned_at, 
-    updated_at
-`
-
-func (q *Queries) ReleaseBed(ctx context.Context, bedID uuid.UUID) (BedManagement, error) {
-	row := q.db.QueryRowContext(ctx, releaseBed, bedID)
-	var i BedManagement
-	err := row.Scan(
-		&i.ID,
-		&i.BedID,
-		&i.PatientID,
-		&i.Status,
-		&i.AssignedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const reserveBed = `-- name: ReserveBed :one
-INSERT INTO bed_management 
-    (
-        bed_id, 
-        patient_id, 
-        status
-    )
-VALUES ($1, $2, 'BED_RESERVED')
-RETURNING 
-    id, 
-    bed_id, 
-    patient_id, 
-    status, 
-    assigned_at, 
-    updated_at
-`
-
-type ReserveBedParams struct {
-	BedID     uuid.UUID
-	PatientID uuid.UUID
-}
-
-func (q *Queries) ReserveBed(ctx context.Context, arg ReserveBedParams) (BedManagement, error) {
-	row := q.db.QueryRowContext(ctx, reserveBed, arg.BedID, arg.PatientID)
-	var i BedManagement
-	err := row.Scan(
-		&i.ID,
-		&i.BedID,
-		&i.PatientID,
-		&i.Status,
-		&i.AssignedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const updateDonor = `-- name: UpdateDonor :one
 UPDATE donors
 SET 
@@ -613,11 +411,11 @@ type UpdateDonorParams struct {
 	Password        string
 	Address         string
 	PhoneNumber     string
-	Gender          interface{}
+	Gender          GenderType
 	BirthDate       time.Time
-	BloodGroup      interface{}
+	BloodGroup      BloodType
 	Weight          int16
-	HealthCondition interface{}
+	HealthCondition HealthConditionType
 	UpdatedAt       sql.NullTime
 }
 
@@ -628,11 +426,11 @@ type UpdateDonorRow struct {
 	Password        string
 	Address         string
 	PhoneNumber     string
-	Gender          interface{}
+	Gender          GenderType
 	BirthDate       time.Time
-	BloodGroup      interface{}
+	BloodGroup      BloodType
 	Weight          int16
-	HealthCondition interface{}
+	HealthCondition HealthConditionType
 	CreatedAt       sql.NullTime
 	UpdatedAt       sql.NullTime
 }

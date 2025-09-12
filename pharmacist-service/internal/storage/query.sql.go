@@ -82,49 +82,6 @@ func (q *Queries) CreateMedicine(ctx context.Context, arg CreateMedicineParams) 
 	return i, err
 }
 
-const createMedicineCategory = `-- name: CreateMedicineCategory :one
-
-INSERT INTO medicines_category
-    (
-        name,
-        description
-    )
-VALUES ($1, $2)
-RETURNING
-    id,
-    name,
-    description,
-    created_at,
-    updated_at
-`
-
-type CreateMedicineCategoryParams struct {
-	Name        MedicineCategory
-	Description string
-}
-
-type CreateMedicineCategoryRow struct {
-	ID          uuid.UUID
-	Name        MedicineCategory
-	Description string
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
-}
-
-// -------------- Medicine Category CRUD ----------------
-func (q *Queries) CreateMedicineCategory(ctx context.Context, arg CreateMedicineCategoryParams) (CreateMedicineCategoryRow, error) {
-	row := q.db.QueryRowContext(ctx, createMedicineCategory, arg.Name, arg.Description)
-	var i CreateMedicineCategoryRow
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Description,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const deleteMedicine = `-- name: DeleteMedicine :exec
 UPDATE medicines
 SET deleted_at = $2
@@ -138,22 +95,6 @@ type DeleteMedicineParams struct {
 
 func (q *Queries) DeleteMedicine(ctx context.Context, arg DeleteMedicineParams) error {
 	_, err := q.db.ExecContext(ctx, deleteMedicine, arg.ID, arg.DeletedAt)
-	return err
-}
-
-const deleteMedicineCategory = `-- name: DeleteMedicineCategory :exec
-UPDATE medicines_category
-SET deleted_at = $2
-WHERE id = $1
-`
-
-type DeleteMedicineCategoryParams struct {
-	ID        uuid.UUID
-	DeletedAt sql.NullTime
-}
-
-func (q *Queries) DeleteMedicineCategory(ctx context.Context, arg DeleteMedicineCategoryParams) error {
-	_, err := q.db.ExecContext(ctx, deleteMedicineCategory, arg.ID, arg.DeletedAt)
 	return err
 }
 
@@ -201,105 +142,6 @@ func (q *Queries) GetMedicineById(ctx context.Context, id uuid.UUID) (GetMedicin
 		&i.UpdatedAt,
 	)
 	return i, err
-}
-
-const getMedicineCategoryById = `-- name: GetMedicineCategoryById :one
-SELECT 
-    id,
-    name,
-    description,
-    created_at,
-    updated_at
-FROM 
-    medicines_category
-WHERE id=$1
-`
-
-type GetMedicineCategoryByIdRow struct {
-	ID          uuid.UUID
-	Name        MedicineCategory
-	Description string
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
-}
-
-func (q *Queries) GetMedicineCategoryById(ctx context.Context, id uuid.UUID) (GetMedicineCategoryByIdRow, error) {
-	row := q.db.QueryRowContext(ctx, getMedicineCategoryById, id)
-	var i GetMedicineCategoryByIdRow
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Description,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const listMedicineCategories = `-- name: ListMedicineCategories :many
-SELECT
-    id,
-    name,
-    description,
-    created_at,
-    updated_at,
-    COUNT(*) OVER() AS total_count
-FROM 
-    medicines_category
-WHERE deleted_at IS NULL
-    AND (
-        $1::search IS NULL 
-        OR LOWER(name) LIKE LOWER(CONCAT('%', $1::search, '%'))
-    )
-ORDER BY
-    created_at DESC
-LIMIT $2 
-OFFSET ($3 - 1) * $2
-`
-
-type ListMedicineCategoriesParams struct {
-	Column1 interface{}
-	Limit   int32
-	Column3 interface{}
-}
-
-type ListMedicineCategoriesRow struct {
-	ID          uuid.UUID
-	Name        MedicineCategory
-	Description string
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
-	TotalCount  int64
-}
-
-func (q *Queries) ListMedicineCategories(ctx context.Context, arg ListMedicineCategoriesParams) ([]ListMedicineCategoriesRow, error) {
-	rows, err := q.db.QueryContext(ctx, listMedicineCategories, arg.Column1, arg.Limit, arg.Column3)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []ListMedicineCategoriesRow
-	for rows.Next() {
-		var i ListMedicineCategoriesRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.Name,
-			&i.Description,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.TotalCount,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
 }
 
 const listMedicines = `-- name: ListMedicines :many
@@ -458,55 +300,6 @@ func (q *Queries) UpdateMedicine(ctx context.Context, arg UpdateMedicineParams) 
 		&i.Price,
 		&i.Company,
 		&i.Status,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const updateMedicineCategory = `-- name: UpdateMedicineCategory :one
-UPDATE medicines_category
-SET 
-    name = $2,
-    description = $3,
-    updated_at = $4
-WHERE id=$1
-    AND deleted_at IS NULL
-RETURNING
-    id,
-    name,
-    description,
-    created_at,
-    updated_at
-`
-
-type UpdateMedicineCategoryParams struct {
-	ID          uuid.UUID
-	Name        MedicineCategory
-	Description string
-	UpdatedAt   sql.NullTime
-}
-
-type UpdateMedicineCategoryRow struct {
-	ID          uuid.UUID
-	Name        MedicineCategory
-	Description string
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
-}
-
-func (q *Queries) UpdateMedicineCategory(ctx context.Context, arg UpdateMedicineCategoryParams) (UpdateMedicineCategoryRow, error) {
-	row := q.db.QueryRowContext(ctx, updateMedicineCategory,
-		arg.ID,
-		arg.Name,
-		arg.Description,
-		arg.UpdatedAt,
-	)
-	var i UpdateMedicineCategoryRow
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Description,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

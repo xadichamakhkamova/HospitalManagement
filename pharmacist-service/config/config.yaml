@@ -1,10 +1,10 @@
 service:
   host: localhost
-  port: 8003
+  port: 8006
 
 postgres:
   host: localhost
   port: 5432
-  dbname: hospitaldb
+  dbname: pharmacistdb
   user: postgres
   password: 1403

@@ -6,18 +6,146 @@ package storage
 
 import (
 	"database/sql"
+	"database/sql/driver"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 )
 
-type BedManagement struct {
-	ID         uuid.UUID
-	BedID      uuid.UUID
-	PatientID  uuid.UUID
-	Status     interface{}
-	AssignedAt sql.NullTime
-	UpdatedAt  sql.NullTime
+type BloodType string
+
+const (
+	BloodTypeAPositive  BloodType = "a_positive"
+	BloodTypeANegative  BloodType = "a_negative"
+	BloodTypeBPositive  BloodType = "b_positive"
+	BloodTypeBNegative  BloodType = "b_negative"
+	BloodTypeAbPositive BloodType = "ab_positive"
+	BloodTypeAbNegative BloodType = "ab_negative"
+	BloodTypeOPositive  BloodType = "o_positive"
+	BloodTypeONegative  BloodType = "o_negative"
+)
+
+func (e *BloodType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = BloodType(s)
+	case string:
+		*e = BloodType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for BloodType: %T", src)
+	}
+	return nil
+}
+
+type NullBloodType struct {
+	BloodType BloodType
+	Valid     bool // Valid is true if BloodType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullBloodType) Scan(value interface{}) error {
+	if value == nil {
+		ns.BloodType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.BloodType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullBloodType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.BloodType), nil
+}
+
+type GenderType string
+
+const (
+	GenderTypeMale   GenderType = "male"
+	GenderTypeFemale GenderType = "female"
+)
+
+func (e *GenderType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = GenderType(s)
+	case string:
+		*e = GenderType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for GenderType: %T", src)
+	}
+	return nil
+}
+
+type NullGenderType struct {
+	GenderType GenderType
+	Valid      bool // Valid is true if GenderType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullGenderType) Scan(value interface{}) error {
+	if value == nil {
+		ns.GenderType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.GenderType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullGenderType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.GenderType), nil
+}
+
+type HealthConditionType string
+
+const (
+	HealthConditionTypeHealthy           HealthConditionType = "healthy"
+	HealthConditionTypeMinorIllness      HealthConditionType = "minor_illness"
+	HealthConditionTypeChronicDisease    HealthConditionType = "chronic_disease"
+	HealthConditionTypeCriticalCondition HealthConditionType = "critical_condition"
+	HealthConditionTypeRecovering        HealthConditionType = "recovering"
+)
+
+func (e *HealthConditionType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = HealthConditionType(s)
+	case string:
+		*e = HealthConditionType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for HealthConditionType: %T", src)
+	}
+	return nil
+}
+
+type NullHealthConditionType struct {
+	HealthConditionType HealthConditionType
+	Valid               bool // Valid is true if HealthConditionType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullHealthConditionType) Scan(value interface{}) error {
+	if value == nil {
+		ns.HealthConditionType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.HealthConditionType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullHealthConditionType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.HealthConditionType), nil
 }
 
 type Donor struct {
@@ -27,11 +155,11 @@ type Donor struct {
 	Password         string
 	Address          string
 	PhoneNumber      string
-	Gender           interface{}
+	Gender           GenderType
 	BirthDate        time.Time
-	BloodGroup       interface{}
+	BloodGroup       BloodType
 	Weight           int16
-	HealthCondition  interface{}
+	HealthCondition  HealthConditionType
 	LastDonation     sql.NullTime
 	DonationCount    sql.NullInt32
 	LastCheckupDate  sql.NullTime
