@@ -38,89 +38,89 @@ func NewServiceRepositoryClient(
 // ------------------- Department -------------------
 
 func (s *ServiceRepositoryClient) CreateDepartment(ctx context.Context, req *pbAdmin.CreateDepartmentRequest) (*pbAdmin.CreateDepartmentResponse, error) {
-	return s.CreateDepartment(ctx, req)
+	return s.adminClient.CreateDepartment(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) GetDepartmentById(ctx context.Context, req *pbAdmin.GetDepartmentByIdRequest) (*pbAdmin.GetDepartmentByIdResponse, error) {
-	return s.GetDepartmentById(ctx, req)
+	return s.adminClient.GetDepartmentById(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) ListDeparments(ctx context.Context, req *pbAdmin.ListDepartmentsRequest) (*pbAdmin.ListDepartmentsResponse, error) {
-	return s.ListDeparments(ctx, req)
+	return s.adminClient.ListDepartments(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) UpdateDepartment(ctx context.Context, req *pbAdmin.UpdateDepartmentRequest) (*pbAdmin.UpdateDepartmentResponse, error) {
-	return s.UpdateDepartment(ctx, req)
+	return s.adminClient.UpdateDepartment(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) DeleteDepartment(ctx context.Context, req *pbAdmin.DeleteDepartmentRequest) (*pbAdmin.DeleteDepartmentResponse, error) {
-	return s.DeleteDepartment(ctx, req)
+	return s.adminClient.DeleteDepartment(ctx, req)
 }
 
 // ------------------- Personal -------------------
 
 func (s *ServiceRepositoryClient) CreatePersonal(ctx context.Context, req *pbAdmin.CreatePersonalRequest) (*pbAdmin.CreatePersonalResponse, error) {
-	return s.CreatePersonal(ctx, req)
+	return s.adminClient.CreatePersonal(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) GetPersonalById(ctx context.Context, req *pbAdmin.GetPersonalByIdRequest) (*pbAdmin.GetPersonalByIdResponse, error) {
-	return s.GetPersonalById(ctx, req)
+	return s.adminClient.GetPersonalById(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) ListPersonals(ctx context.Context, req *pbAdmin.ListPersonalsRequest) (*pbAdmin.ListPersonalsResponse, error) {
-	return s.ListPersonals(ctx, req)
+	return s.adminClient.ListPersonals(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) UpdatePersonal(ctx context.Context, req *pbAdmin.UpdatePersonalRequest) (*pbAdmin.UpdatePersonalResponse, error) {
-	return s.UpdatePersonal(ctx, req)
+	return s.adminClient.UpdatePersonal(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) DeletePersonal(ctx context.Context, req *pbAdmin.DeletePersonalRequest) (*pbAdmin.DeletePersonalResponse, error) {
-	return s.DeletePersonal(ctx, req)
+	return s.adminClient.DeletePersonal(ctx, req)
 }
 
 // ------------------- Doctor -------------------
 
 func (s *ServiceRepositoryClient) CreateDoctor(ctx context.Context, req *pbAdmin.CreateDoctorRequest) (*pbAdmin.CreateDoctorResponse, error) {
-	return s.CreateDoctor(ctx, req)
+	return s.adminClient.CreateDoctor(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) GetDoctorById(ctx context.Context, req *pbAdmin.GetPersonalByIdRequest) (*pbAdmin.GetDoctorByIdResponse, error) {
-	return s.GetDoctorById(ctx, req)
+	return s.adminClient.GetDoctorById(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) ListDoctors(ctx context.Context, req *pbAdmin.ListPersonalsRequest) (*pbAdmin.ListDoctorsResponse, error) {
-	return s.ListDoctors(ctx, req)
+	return s.adminClient.ListDoctors(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) UpdateDoctor(ctx context.Context, req *pbAdmin.UpdateDoctorRequest) (*pbAdmin.UpdateDoctorResponse, error) {
-	return s.UpdateDoctor(ctx, req)
+	return s.adminClient.UpdateDoctor(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) DeleteDoctor(ctx context.Context, req *pbAdmin.DeletePersonalRequest) (*pbAdmin.DeletePersonalResponse, error) {
-	return s.DeleteDoctor(ctx, req)
+	return s.adminClient.DeleteDoctor(ctx, req)
 }
 
 // ------------------- Bed -------------------
 
 func (s *ServiceRepositoryClient) CreateBed(ctx context.Context, req *pbAdmin.CreateBedRequest) (*pbAdmin.CreateBedResponse, error) {
-	return s.CreateBed(ctx, req)
+	return s.adminClient.CreateBed(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) GetBedByID(ctx context.Context, req *pbAdmin.GetBedByIDRequest) (*pbAdmin.GetBedByIDResponse, error) {
-	return s.GetBedByID(ctx, req)
+	return s.adminClient.GetBedByID(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) ListBedS(ctx context.Context, req *pbAdmin.ListBedSRequest) (*pbAdmin.ListBedSResponse, error) {
-	return s.ListBedS(ctx, req)
+	return s.adminClient.ListBedS(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) UpdateBed(ctx context.Context, req *pbAdmin.UpdateBedRequest) (*pbAdmin.UpdateBedResponse, error) {
-	return s.UpdateBed(ctx, req)
+	return s.adminClient.UpdateBed(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) DeleteBed(ctx context.Context, req *pbAdmin.DeleteBedRequest) (*pbAdmin.DeleteBedResponse, error) {
-	return s.DeleteBed(ctx, req)
+	return s.adminClient.DeleteBed(ctx, req)
 }
 
 //! Doctor Service

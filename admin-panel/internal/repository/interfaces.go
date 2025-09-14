@@ -1,15 +1,16 @@
 package repository
 
 import (
-	"admin-panel/internal/storage"
 	"context"
 
+	"github.com/sirupsen/logrus"
 	pb "github.com/xadichamakhkamova/HospitalContracts/genproto/adminpb"
 )
 
-func NewIAdminRepository(queries *storage.Queries) IAdminRepository {
+func NewIAdminRepository(repo *AdminREPO, log *logrus.Logger) IAdminRepository {
 	return &AdminREPO{
-		queries: queries,
+		queries: repo.queries,
+		log:     log,
 	}
 }
 
