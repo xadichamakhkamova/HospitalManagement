@@ -34,7 +34,7 @@ func main() {
 	log.Info("Connected to Postgres database")
 
 	// Repository init
-	queries := repository.NewAdminSqlc(db, log)
+	queries := repository.NewAdminSqlc(db, log)	
 	repo := repository.NewIAdminRepository(queries, log)
 	log.Info("Repository initialized")
 

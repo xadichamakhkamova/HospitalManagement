@@ -38,8 +38,8 @@ func main() {
 	log.Info("Connected to Postgres database")
 
 	// Repository init
-	queries := repository.NewDoctorSqlc(db)
-	repo := repository.NewIDoctorRepository(queries)
+	queries := repository.NewDoctorSqlc(db, log)
+	repo := repository.NewIDoctorRepository(queries, log)
 	log.Info("Doctor repository initialized")
 
 	// Connect to Admin Service
