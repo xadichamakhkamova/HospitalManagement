@@ -2,14 +2,15 @@ package repository
 
 import (
 	"context"
-	"nurse-service/internal/storage"
 
+	"github.com/sirupsen/logrus"
 	pb "github.com/xadichamakhkamova/HospitalContracts/genproto/nursepb"
 )
 
-func NewINurseRepository(queries *storage.Queries) INurseRepository {
+func NewINurseRepository(repo *NurseREPO, log *logrus.Logger) INurseRepository {
 	return &NurseREPO{
-		queries: queries,
+		queries: repo.queries,
+		log:     log,
 	}
 }
 

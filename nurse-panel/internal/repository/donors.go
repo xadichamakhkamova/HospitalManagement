@@ -6,6 +6,7 @@ import (
 	"nurse-service/internal/storage"
 	"time"
 
+	"github.com/sirupsen/logrus"
 	pb "github.com/xadichamakhkamova/HospitalContracts/genproto/nursepb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
@@ -22,10 +23,14 @@ func convertNullTime(nt sql.NullTime) *timestamppb.Timestamp {
 
 type NurseREPO struct {
 	queries *storage.Queries
+	log     *logrus.Logger
 }
 
-func NewNurseSqlc(db *sql.DB) *storage.Queries {
-	return storage.New(db)
+func NewNurseSqlc(db *sql.DB, log *logrus.Logger) *NurseREPO {
+	return &NurseREPO{
+		queries: storage.New(db),
+		log:     log,
+	}
 }
 
 func (q *NurseREPO) CreateDonor(ctx context.Context, req *pb.CreateDonorRequest) (*pb.CreateDonorResponse, error) {

@@ -35,8 +35,8 @@ func main() {
 	log.Info("Connected to Postgres database")
 
 	// Repository init
-	queries := repository.NewNurseSqlc(db)
-	repo := repository.NewINurseRepository(queries)
+	queries := repository.NewNurseSqlc(db, log)
+	repo := repository.NewINurseRepository(queries, log)
 	log.Info("Nurse repository initialized")
 
 	// Service init
