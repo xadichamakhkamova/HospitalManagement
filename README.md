@@ -1,44 +1,44 @@
-# Hospital Management System
+# 🏥 Hospital Management System
 
-This is a **microservices-based Hospital Management System** implemented in **Go**. The system provides comprehensive management of hospital operations including administration, doctors, nurses, patients, and pharmacists. The services communicate via **gRPC** and are exposed through an **API Gateway** with authentication and authorization mechanisms.
+A **microservices-based Hospital Management System** built with **Go**.  
+This project helps manage hospital operations such as administration, doctors, nurses, patients, and pharmacists.  
+All services communicate using **gRPC** and are exposed via an **API Gateway**.
 
 ---
 
-### Services
+## 📌 Microservices
 
-1. **Admin Panel**
-   - Manages departments, personals, doctors, and beds.
-   - Handles CRUD operations and storage.
+### 🔹 Admin Panel
+- Manage **departments**, **personals**, **doctors**, and **beds**  
+- CRUD operations with PostgreSQL
 
-2. **API Gateway**
-   - Serves as the entry point for all clients.
-   - Routes requests to appropriate microservices.
-   - Provides JWT-based authentication and authorization.
-   - Integrates Swagger documentation for API endpoints.
+### 🔹 API Gateway
+- Single entry point for clients  
+- Routes requests to microservices  
+- Integrated **Swagger documentation**  
+- Supports **HTTPS** with self-signed certificates  
 
-3. **Doctor Service**
-   - Handles appointments and prescriptions.
-   - Communicates with Admin and Patient services.
+### 🔹 Doctor Service
+- Handles **appointments** and **prescriptions**  
+- Communicates with Admin & Patient services  
 
-4. **Nurse Panel**
-   - Manages donor data and related operations.
+### 🔹 Nurse Panel
+- Manages **donor data** and related operations  
 
-5. **Patient Management Service**
-   - Handles patient records and personal data.
+### 🔹 Patient Management Service
+- Handles **patients’ records** and personal data  
 
-6. **Pharmacist Service**
-   - Manages medicines and pharmaceutical inventory.
+### 🔹 Pharmacist Service
+- Manages **medicines** and pharmaceutical inventory  
 
 ---
 
 ## ⚙️ Features
-
-- **Microservices Architecture** using gRPC
-- **JWT Authentication** for secure access
-- **Role-Based Authorization**
-- **Database Migrations** via SQL scripts
-- **Swagger Documentation** for API endpoints
-- **HTTPS Support** with `mkcert` self-signed certificates
-- **Logging** with `logrus` in JSON format
+- **Microservices Architecture** with gRPC  
+- **PostgreSQL + SQLC** for database queries  
+- **Database Migrations** via SQL scripts  
+- **Swagger API Documentation**  
+- **TLS/HTTPS** with `mkcert`  
+- **Structured Logging** with `logrus` (JSON format)  
 
 ---
