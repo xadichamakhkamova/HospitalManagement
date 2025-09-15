@@ -15,267 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/admin/beds": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "This method gets beds list by filter",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "BEDS"
-                ],
-                "summary": "GET BEDS LIST",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Search by room number, status, etc",
-                        "name": "search",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Page number",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Items per page",
-                        "name": "limit",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.ListBedsResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "This method creates bed",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "BEDS"
-                ],
-                "summary": "CREATE BED",
-                "parameters": [
-                    {
-                        "description": "Bed",
-                        "name": "bed",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateBedRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateBedResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/beds/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "This method gets bed by id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "BEDS"
-                ],
-                "summary": "GET BED BY ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bed Id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.GetBedByIDResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "This method updates bed",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "BEDS"
-                ],
-                "summary": "UPDATE BED",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bed Id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Bed",
-                        "name": "bed",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.UpdateBedRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.UpdateBedResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "This method deletes bed",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "BEDS"
-                ],
-                "summary": "DELETE BED",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bed Id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.DeleteBedResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/admin/departments": {
             "get": {
                 "security": [
@@ -2404,63 +2143,6 @@ const docTemplate = `{
                 }
             }
         },
-        "models.BedInfo": {
-            "type": "object",
-            "properties": {
-                "bed_number": {
-                    "type": "integer"
-                },
-                "bed_type": {
-                    "$ref": "#/definitions/models.BedType"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "status": {
-                    "$ref": "#/definitions/models.BedStatus"
-                },
-                "timestamps": {
-                    "$ref": "#/definitions/models.Timestamps1"
-                }
-            }
-        },
-        "models.BedStatus": {
-            "type": "string",
-            "enum": [
-                "BED_UNSPECIFIED",
-                "BED_AVAILABLE",
-                "BED_OCCUPIED",
-                "BED_RESERVED",
-                "BED_MAINTENANCE"
-            ],
-            "x-enum-varnames": [
-                "BedUnspecified",
-                "BedAvailable",
-                "BedOccupied",
-                "BedReserved",
-                "BedMaintenance"
-            ]
-        },
-        "models.BedType": {
-            "type": "string",
-            "enum": [
-                "BED_TYPE_UNSPECIFIED",
-                "GENERAL",
-                "PERSONAL",
-                "ICU",
-                "SURGICAL"
-            ],
-            "x-enum-varnames": [
-                "BedTypeUnspecified",
-                "General",
-                "Personall",
-                "ICU",
-                "Surgical"
-            ]
-        },
         "models.BloodType": {
             "type": "string",
             "enum": [
@@ -2505,28 +2187,6 @@ const docTemplate = `{
             "properties": {
                 "appointment": {
                     "$ref": "#/definitions/models.Appointment"
-                }
-            }
-        },
-        "models.CreateBedRequest": {
-            "type": "object",
-            "properties": {
-                "bed_number": {
-                    "type": "integer"
-                },
-                "bed_type": {
-                    "$ref": "#/definitions/models.BedType"
-                },
-                "description": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.CreateBedResponse": {
-            "type": "object",
-            "properties": {
-                "bed": {
-                    "$ref": "#/definitions/models.BedInfo"
                 }
             }
         },
@@ -2773,14 +2433,6 @@ const docTemplate = `{
                 }
             }
         },
-        "models.DeleteBedResponse": {
-            "type": "object",
-            "properties": {
-                "status": {
-                    "type": "integer"
-                }
-            }
-        },
         "models.DeleteDepartmentResponse": {
             "type": "object",
             "properties": {
@@ -2892,14 +2544,6 @@ const docTemplate = `{
                 }
             }
         },
-        "models.GetBedByIDResponse": {
-            "type": "object",
-            "properties": {
-                "bed": {
-                    "$ref": "#/definitions/models.BedInfo"
-                }
-            }
-        },
         "models.GetDepartmentByIdResponse": {
             "type": "object",
             "properties": {
@@ -2978,20 +2622,6 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.Appointment"
-                    }
-                },
-                "total_count": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.ListBedsResponse": {
-            "type": "object",
-            "properties": {
-                "beds": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.BedInfo"
                     }
                 },
                 "total_count": {
@@ -3409,34 +3039,6 @@ const docTemplate = `{
             "properties": {
                 "appointment": {
                     "$ref": "#/definitions/models.Appointment"
-                }
-            }
-        },
-        "models.UpdateBedRequest": {
-            "type": "object",
-            "properties": {
-                "bed_number": {
-                    "type": "integer"
-                },
-                "bed_type": {
-                    "$ref": "#/definitions/models.BedType"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "status": {
-                    "$ref": "#/definitions/models.BedStatus"
-                }
-            }
-        },
-        "models.UpdateBedResponse": {
-            "type": "object",
-            "properties": {
-                "bed": {
-                    "$ref": "#/definitions/models.BedInfo"
                 }
             }
         },
