@@ -34,8 +34,8 @@ func main() {
 	log.Info("Connected to Postgres database")
 
 	// Repository init
-	queries := repository.NewPatientSqlc(db)
-	repo := repository.NewIPatientRepository(queries)
+	queries := repository.NewPatientSqlc(db, log)
+	repo := repository.NewIPatientRepository(queries, log)
 	log.Info("Patient repository initialized")
 
 	// Service init

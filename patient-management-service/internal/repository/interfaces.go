@@ -1,15 +1,16 @@
 package repository
 
 import (
-	"patient-service/internal/storage"
 	"context"
 
+	"github.com/sirupsen/logrus"
 	pb "github.com/xadichamakhkamova/HospitalContracts/genproto/patientpb"
 )
 
-func NewIPatientRepository(queries *storage.Queries) IPatientRepository {
+func NewIPatientRepository(repo *PatientREPO, log *logrus.Logger) IPatientRepository {
 	return &PatientREPO{
-		queries: queries,
+		queries: repo.queries,
+		log:     log,
 	}
 }
 

@@ -2,14 +2,15 @@ package repository
 
 import (
 	"context"
-	"pharmacist-service/internal/storage"
 
+	"github.com/sirupsen/logrus"
 	pb "github.com/xadichamakhkamova/HospitalContracts/genproto/pharmacistpb"
 )
 
-func NewIPharmacistRepository(queries *storage.Queries) IPharmacistRepository {
+func NewIPharmacistRepository(repo *PharmaREPO, log *logrus.Logger) IPharmacistRepository {
 	return &PharmaREPO{
-		queries: queries,
+		queries: repo.queries,
+		log:     log,
 	}
 }
 
