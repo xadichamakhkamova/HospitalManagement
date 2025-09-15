@@ -1,11 +1,8 @@
 package models
 
-import "time"
-
-
 type Timestamps1 struct {
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
 
 type Department struct {
@@ -33,7 +30,6 @@ type Doctor struct {
 	DepartmentNumber int64       `json:"department_number"`
 	Timestamps       Timestamps1 `json:"timestamps"`
 }
-
 
 // -------- Department --------
 type CreateDepartmentRequest struct {

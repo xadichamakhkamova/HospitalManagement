@@ -1,12 +1,10 @@
 package models
 
-import "time"
-
 type Appointment struct {
-	ID        string      `json:"id"`
-	DoctorID  string      `json:"doctor_id"`
-	PatientID string      `json:"patient_id"`
-	Date      time.Time   `json:"date"`
+	ID         string      `json:"id"`
+	DoctorID   string      `json:"doctor_id"`
+	PatientID  string      `json:"patient_id"`
+	Date       string      `json:"date"`
 	Timestamps Timestamps2 `json:"timestamps"`
 }
 
@@ -21,9 +19,9 @@ type Prescription struct {
 }
 
 type CreateAppointmentRequest struct {
-	DoctorID  string    `json:"doctor_id"`
-	PatientID string    `json:"patient_id"`
-	Date      time.Time `json:"date"`
+	DoctorID  string `json:"doctor_id"`
+	PatientID string `json:"patient_id"`
+	Date      string `json:"date"`
 }
 type CreateAppointmentResponse struct {
 	Appointment Appointment `json:"appointment"`
@@ -37,9 +35,9 @@ type GetAppointmentByIdResponse struct {
 }
 
 type ListAppointmentsRequest struct {
-	Date  time.Time `json:"date"`
-	Page  int32     `json:"page"`
-	Limit int32     `json:"limit"`
+	Date  string `json:"date"`
+	Page  int32  `json:"page"`
+	Limit int32  `json:"limit"`
 }
 type ListAppointmentsResponse struct {
 	Appointments []Appointment `json:"appointments"`
@@ -47,10 +45,10 @@ type ListAppointmentsResponse struct {
 }
 
 type UpdateAppointmentRequest struct {
-	ID        string    `json:"id"`
-	DoctorID  string    `json:"doctor_id"`
-	PatientID string    `json:"patient_id"`
-	Date      time.Time `json:"date"`
+	ID        string `json:"id"`
+	DoctorID  string `json:"doctor_id"`
+	PatientID string `json:"patient_id"`
+	Date      string `json:"date"`
 }
 type UpdateAppointmentResponse struct {
 	Appointment Appointment `json:"appointment"`
@@ -106,6 +104,6 @@ type DeletePrescriptionResponse struct {
 }
 
 type Timestamps2 struct {
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }

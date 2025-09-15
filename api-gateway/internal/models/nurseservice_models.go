@@ -1,14 +1,12 @@
 package models
 
-import "time"
-
 type HealthConditionType string
 
 const (
-	Healthy       HealthConditionType = "healthy"
-	MinorIllness  HealthConditionType = "minor_illness"
-	Chronic       HealthConditionType = "chronic"
-	NotEligible   HealthConditionType = "not_eligible"
+	Healthy      HealthConditionType = "healthy"
+	MinorIllness HealthConditionType = "minor_illness"
+	Chronic      HealthConditionType = "chronic"
+	NotEligible  HealthConditionType = "not_eligible"
 )
 
 type PatientDonor struct {
@@ -21,10 +19,10 @@ type PatientDonor struct {
 	Gender           string              `json:"gender" example:"Male"`
 	BirthDate        string              `json:"birth_date" example:"1990-01-01"`
 	BloodGroup       string              `json:"blood_group" example:"O+"`
-	LastDonation     time.Time           `json:"last_donation" example:"2025-09-01T12:00:00Z"`
+	LastDonation     string              `json:"last_donation" example:"2025-09-01T12:00:00Z"`
 	DonationCount    int32               `json:"donation_count" example:"5"`
 	IsEligible       bool                `json:"is_eligible" example:"true"`
-	LastCheckupDate  time.Time           `json:"last_checkup_date" example:"2025-08-20T12:00:00Z"`
+	LastCheckupDate  string              `json:"last_checkup_date" example:"2025-08-20T12:00:00Z"`
 	Weight           float64             `json:"weight" example:"72.5"`
 	HealthConditions HealthConditionType `json:"health_conditions" example:"healthy"`
 	DonationLocation string              `json:"donation_location" example:"City Hospital"`
@@ -102,9 +100,9 @@ type RegisterDonationRequest struct {
 }
 
 type RegisterDonationResponse struct {
-	LastDonation  time.Time `json:"last_donation" example:"2025-09-01T12:00:00Z"`
-	DonationCount int32     `json:"donation_count" example:"5"`
-	IsEligible    bool      `json:"is_eligible" example:"true"`
+	LastDonation  string `json:"last_donation" example:"2025-09-01T12:00:00Z"`
+	DonationCount int32  `json:"donation_count" example:"5"`
+	IsEligible    bool   `json:"is_eligible" example:"true"`
 }
 
 type RegisterCheckupRequest struct {
@@ -112,11 +110,11 @@ type RegisterCheckupRequest struct {
 }
 
 type RegisterCheckupResponse struct {
-	LastCheckupDate time.Time `json:"last_checkup_date" example:"2025-08-20T12:00:00Z"`
-	IsEligible      bool      `json:"is_eligible" example:"true"`
+	LastCheckupDate string `json:"last_checkup_date" example:"2025-08-20T12:00:00Z"`
+	IsEligible      bool   `json:"is_eligible" example:"true"`
 }
 
 type Timestamps3 struct {
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }

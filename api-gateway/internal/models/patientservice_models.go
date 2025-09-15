@@ -1,8 +1,7 @@
-package models 
-
-import "time"
+package models
 
 type GenderType string
+
 const (
 	GenderUnspecified GenderType = "GENDER_TYPE_UNSPECIFIED"
 	GenderMale        GenderType = "MALE"
@@ -10,6 +9,7 @@ const (
 )
 
 type BloodType string
+
 const (
 	BloodUnspecified BloodType = "BLOOD_TYPE_UNSPECIFIED"
 	APositive        BloodType = "A_POSITIVE"
@@ -89,8 +89,7 @@ type DeletePatientResponse struct {
 	Status int64 `json:"status"` // 204 = deleted
 }
 
-
 type Timestamps4 struct {
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }

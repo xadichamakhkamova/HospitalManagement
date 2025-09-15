@@ -1,26 +1,26 @@
-package models 
-
-import "time"
+package models
 
 type MedicineCategory string
+
 const (
-	MedicineCategoryUnspecified  MedicineCategory = "MEDICINE_CATEGORY_UNSPECIFIED"
-	MedicineCategoryAntibiotic   MedicineCategory = "MEDICINE_CATEGORY_ANTIBIOTIC"
-	MedicineCategoryAnalgesic    MedicineCategory = "MEDICINE_CATEGORY_ANALGESIC"
-	MedicineCategoryAntiviral    MedicineCategory = "MEDICINE_CATEGORY_ANTIVIRAL"
-	MedicineCategoryVitamins     MedicineCategory = "MEDICINE_CATEGORY_VITAMINS"
-	MedicineCategoryAntifungal   MedicineCategory = "MEDICINE_CATEGORY_ANTIFUNGAL"
-	MedicineCategoryVaccine      MedicineCategory = "MEDICINE_CATEGORY_VACCINE"
-	MedicineCategoryOther        MedicineCategory = "MEDICINE_CATEGORY_OTHER"
+	MedicineCategoryUnspecified MedicineCategory = "MEDICINE_CATEGORY_UNSPECIFIED"
+	MedicineCategoryAntibiotic  MedicineCategory = "MEDICINE_CATEGORY_ANTIBIOTIC"
+	MedicineCategoryAnalgesic   MedicineCategory = "MEDICINE_CATEGORY_ANALGESIC"
+	MedicineCategoryAntiviral   MedicineCategory = "MEDICINE_CATEGORY_ANTIVIRAL"
+	MedicineCategoryVitamins    MedicineCategory = "MEDICINE_CATEGORY_VITAMINS"
+	MedicineCategoryAntifungal  MedicineCategory = "MEDICINE_CATEGORY_ANTIFUNGAL"
+	MedicineCategoryVaccine     MedicineCategory = "MEDICINE_CATEGORY_VACCINE"
+	MedicineCategoryOther       MedicineCategory = "MEDICINE_CATEGORY_OTHER"
 )
 
 type MedicineStatus string
+
 const (
-	MedicineStatusUnspecified   MedicineStatus = "MEDICINE_STATUS_UNSPECIFIED"
-	MedicineStatusAvailable     MedicineStatus = "MEDICINE_STATUS_AVAILABLE"
-	MedicineStatusOutOfStock    MedicineStatus = "MEDICINE_STATUS_OUT_OF_STOCK"
-	MedicineStatusExpired       MedicineStatus = "MEDICINE_STATUS_EXPIRED"
-	MedicineStatusDiscontinued  MedicineStatus = "MEDICINE_STATUS_DISCONTINUED"
+	MedicineStatusUnspecified  MedicineStatus = "MEDICINE_STATUS_UNSPECIFIED"
+	MedicineStatusAvailable    MedicineStatus = "MEDICINE_STATUS_AVAILABLE"
+	MedicineStatusOutOfStock   MedicineStatus = "MEDICINE_STATUS_OUT_OF_STOCK"
+	MedicineStatusExpired      MedicineStatus = "MEDICINE_STATUS_EXPIRED"
+	MedicineStatusDiscontinued MedicineStatus = "MEDICINE_STATUS_DISCONTINUED"
 )
 
 type Medicine struct {
@@ -85,6 +85,6 @@ type DeleteMedicineResponse struct {
 }
 
 type Timestamps5 struct {
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
