@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/sirupsen/logrus"
 	pb "github.com/xadichamakhkamova/HospitalContracts/genproto/adminpb"
 
 	"github.com/gin-gonic/gin"
@@ -12,7 +13,7 @@ import (
 
 // @Router /admin/departments [post]
 // @Summary CREATE DEPARTMENT
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method creates department
 // @Tags DEPARTMENTS
 // @Accept json
@@ -23,24 +24,29 @@ import (
 // @Failure 500 {object} string
 func (h *HandlerST) CreateDepartment(c *gin.Context) {
 
+	h.log.Infof("CreateDepartment called")
+
 	req := pb.CreateDepartmentRequest{}
 	if err := c.BindJSON(&req); err != nil {
+		h.log.Errorf("CreateDepartment invalid request: %v", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-	var ctx context.Context
-	resp, err := h.service.CreateDepartment(ctx, &req)
+
+	resp, err := h.service.CreateDepartment(context.Background(), &req)
 	if err != nil {
+		h.log.Errorf("CreateDepartment service error: %v", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
+	h.log.Infof("Department created successfully with Name=%s", req.Name)
 	c.JSON(200, resp)
 }
 
 // @Router /admin/departments/{id} [get]
 // @Summary GET DEPARTMENT BY ID
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method gets department by id
 // @Tags DEPARTMENTS
 // @Accept json
@@ -51,19 +57,24 @@ func (h *HandlerST) CreateDepartment(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) GetDepartmentById(c *gin.Context) {
 
-	req := pb.GetDepartmentByIdRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.Infof("GetDepartmentById called with ID=%s", id)
+
+	req := pb.GetDepartmentByIdRequest{Id: id}
 	resp, err := h.service.GetDepartmentById(context.Background(), &req)
 	if err != nil {
+		h.log.Errorf("GetDepartmentById service error: %v", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Infof("Department retrieved successfully with ID=%s", id)
 	c.JSON(200, resp)
 }
 
-// @Router /admin/departments	[get]
+// @Router /admin/departments [get]
 // @Summary GET DEPARTMENTS LIST
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method gets departments list by filter
 // @Tags DEPARTMENTS
 // @Accept json
@@ -76,27 +87,32 @@ func (h *HandlerST) GetDepartmentById(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) ListDepartments(c *gin.Context) {
 
-	req := pb.ListDepartmentsRequest{}
-	search := c.Query("search")
-
-	req.Search = strings.TrimSpace(search)
-
+	search := strings.TrimSpace(c.Query("search"))
 	page, _ := strconv.Atoi(c.Query("page"))
 	limit, _ := strconv.Atoi(c.Query("limit"))
-	req.Page = int32(page)
-	req.Limit = int32(limit)
+
+	h.log.Infof("ListDepartments called with Search=%s, Page=%d, Limit=%d", search, page, limit)
+
+	req := pb.ListDepartmentsRequest{
+		Search: search,
+		Page:   int32(page),
+		Limit:  int32(limit),
+	}
 
 	resp, err := h.service.ListDeparments(context.Background(), &req)
 	if err != nil {
+		h.log.Errorf("ListDepartments service error: %v", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Infof("ListDepartments returned %d departments", len(resp.Deparments))
 	c.JSON(200, resp)
 }
 
 // @Router /admin/departments/{id} [put]
 // @Summary UPDATE DEPARTMENTS
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method updates departments
 // @Tags DEPARTMENTS
 // @Accept json
@@ -108,24 +124,30 @@ func (h *HandlerST) ListDepartments(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) UpdateDepartment(c *gin.Context) {
 
-	req := pb.UpdateDepartmentRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.Infof("UpdateDepartment called with ID=%s", id)
+
+	req := pb.UpdateDepartmentRequest{Id: id}
 	if err := c.BindJSON(&req); err != nil {
+		h.log.Errorf("UpdateDepartment invalid request: %v", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
 	resp, err := h.service.UpdateDepartment(context.Background(), &req)
 	if err != nil {
+		h.log.Errorf("UpdateDepartment service error: %v", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Infof("Department updated successfully with ID=%s", id)
 	c.JSON(200, resp)
 }
 
 // @Router /admin/departments/{id} [delete]
 // @Summary DELETE DEPARTMENT
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method deletes department
 // @Tags DEPARTMENTS
 // @Accept json
@@ -136,19 +158,24 @@ func (h *HandlerST) UpdateDepartment(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) DeleteDepartment(c *gin.Context) {
 
-	req := pb.DeleteDepartmentRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.Infof("DeleteDepartment called with ID=%s", id)
+
+	req := pb.DeleteDepartmentRequest{Id: id}
 	resp, err := h.service.DeleteDepartment(context.Background(), &req)
 	if err != nil {
+		h.log.Errorf("DeleteDepartment service error: %v", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Infof("Department deleted successfully with ID=%s", id)
 	c.JSON(200, resp)
 }
 
 // @Router /admin/personals [post]
 // @Summary CREATE PERSONAL
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method creates personal
 // @Tags PERSONALS
 // @Accept json
@@ -161,20 +188,26 @@ func (h *HandlerST) CreatePersonal(c *gin.Context) {
 
 	req := pb.CreatePersonalRequest{}
 	if err := c.BindJSON(&req); err != nil {
+		h.log.Error("failed to bind request in CreatePersonal", "error", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
+	h.log.Info("CreatePersonal request received", "request", req.Email)
+
 	resp, err := h.service.CreatePersonal(context.Background(), &req)
 	if err != nil {
+		h.log.Error("failed to create personal", "error", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("CreatePersonal successful", "response", resp)
 	c.JSON(200, resp)
 }
 
 // @Router /admin/personals/{id} [get]
 // @Summary GET PERSONAL BY ID
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method gets personal by id
 // @Tags PERSONALS
 // @Accept json
@@ -185,20 +218,23 @@ func (h *HandlerST) CreatePersonal(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) GetPersonalById(c *gin.Context) {
 
-	req := pb.GetPersonalByIdRequest{}
-	req.Id = c.Param("id")
+	req := pb.GetPersonalByIdRequest{Id: c.Param("id")}
+	h.log.Info("GetPersonalById request received", "id", req.Id)
 
 	resp, err := h.service.GetPersonalById(context.Background(), &req)
 	if err != nil {
+		h.log.Error("failed to get personal by id", "id", req.Id, "error", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("GetPersonalById successful", "id", req.Id, "response", resp)
 	c.JSON(200, resp)
 }
 
 // @Router /admin/personals [get]
 // @Summary GET PERSONALS LIST
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method gets personals list by filter
 // @Tags PERSONALS
 // @Accept json
@@ -212,25 +248,29 @@ func (h *HandlerST) GetPersonalById(c *gin.Context) {
 func (h *HandlerST) ListPersonals(c *gin.Context) {
 
 	req := pb.ListPersonalsRequest{}
-	search := c.Query("search")
-	req.Search = strings.TrimSpace(search)
+	req.Search = strings.TrimSpace(c.Query("search"))
 
 	page, _ := strconv.Atoi(c.Query("page"))
 	limit, _ := strconv.Atoi(c.Query("limit"))
 	req.Page = int32(page)
 	req.Limit = int32(limit)
 
+	h.log.Info("ListPersonals request received", "search", req.Search, "page", req.Page, "limit", req.Limit)
+
 	resp, err := h.service.ListPersonals(context.Background(), &req)
 	if err != nil {
+		h.log.Error("failed to list personals", "error", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("ListPersonals successful", "total", len(resp.Personals))
 	c.JSON(200, resp)
 }
 
 // @Router /admin/personals/{id} [put]
 // @Summary UPDATE PERSONAL
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method updates personal
 // @Tags PERSONALS
 // @Accept json
@@ -242,25 +282,28 @@ func (h *HandlerST) ListPersonals(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) UpdatePersonal(c *gin.Context) {
 
-	req := pb.UpdatePersonalRequest{}
-	req.Id = c.Param("id")
-
+	req := pb.UpdatePersonalRequest{Id: c.Param("id")}
 	if err := c.BindJSON(&req); err != nil {
+		h.log.Error("failed to bind request in UpdatePersonal", "id", req.Id, "error", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
+	h.log.Info("UpdatePersonal request received", "id", req.Id, "request", req.Email)
 
 	resp, err := h.service.UpdatePersonal(context.Background(), &req)
 	if err != nil {
+		h.log.Error("failed to update personal", "id", req.Id, "error", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("UpdatePersonal successful", "id", req.Id, "response", resp)
 	c.JSON(200, resp)
 }
 
 // @Router /admin/personals/{id} [delete]
 // @Summary DELETE PERSONAL
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method deletes personal
 // @Tags PERSONALS
 // @Accept json
@@ -270,21 +313,24 @@ func (h *HandlerST) UpdatePersonal(c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 func (h *HandlerST) DeletePersonal(c *gin.Context) {
-	
-	req := pb.DeletePersonalRequest{}
-	req.Id = c.Param("id")
+
+	req := pb.DeletePersonalRequest{Id: c.Param("id")}
+	h.log.Info("DeletePersonal request received", "id", req.Id)
 
 	resp, err := h.service.DeletePersonal(context.Background(), &req)
 	if err != nil {
+		h.log.Error("failed to delete personal", "id", req.Id, "error", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("DeletePersonal successful", "id", req.Id, "response", resp)
 	c.JSON(200, resp)
 }
 
 // @Router /admin/doctors [post]
 // @Summary CREATE DOCTOR
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method creates doctor
 // @Tags DOCTORS
 // @Accept json
@@ -297,20 +343,26 @@ func (h *HandlerST) CreateDoctor(c *gin.Context) {
 
 	req := pb.CreateDoctorRequest{}
 	if err := c.BindJSON(&req); err != nil {
+		h.log.Error("failed to bind request in CreateDoctor", "error", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
+	h.log.Info("CreateDoctor request received", "request", req.PersonalId)
+
 	resp, err := h.service.CreateDoctor(context.Background(), &req)
 	if err != nil {
+		h.log.Error("failed to create doctor", "error", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("CreateDoctor successful", "response", resp)
 	c.JSON(200, resp)
 }
 
 // @Router /admin/doctors/{id} [get]
 // @Summary GET DOCTOR BY ID
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method gets doctor by id
 // @Tags DOCTORS
 // @Accept json
@@ -321,20 +373,23 @@ func (h *HandlerST) CreateDoctor(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) GetDoctorById(c *gin.Context) {
 
-	req := pb.GetPersonalByIdRequest{}
-	req.Id = c.Param("id")
+	req := pb.GetPersonalByIdRequest{Id: c.Param("id")}
+	h.log.Info("GetDoctorById request received", "id", req.Id)
 
 	resp, err := h.service.GetDoctorById(context.Background(), &req)
 	if err != nil {
+		h.log.Error("failed to get doctor by id", "id", req.Id, "error", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("GetDoctorById successful", "id", req.Id, "response", resp)
 	c.JSON(200, resp)
 }
 
 // @Router /admin/doctors [get]
 // @Summary GET DOCTORS LIST
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method gets doctors list by filter
 // @Tags DOCTORS
 // @Accept json
@@ -348,25 +403,29 @@ func (h *HandlerST) GetDoctorById(c *gin.Context) {
 func (h *HandlerST) ListDoctors(c *gin.Context) {
 
 	req := pb.ListPersonalsRequest{}
-	search := c.Query("search")
-	req.Search = strings.TrimSpace(search)
+	req.Search = strings.TrimSpace(c.Query("search"))
 
 	page, _ := strconv.Atoi(c.Query("page"))
 	limit, _ := strconv.Atoi(c.Query("limit"))
 	req.Page = int32(page)
 	req.Limit = int32(limit)
 
+	h.log.Info("ListDoctors request received", "search", req.Search, "page", req.Page, "limit", req.Limit)
+
 	resp, err := h.service.ListDoctors(context.Background(), &req)
 	if err != nil {
+		h.log.Error("failed to list doctors", "error", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("ListDoctors successful", "count", len(resp.Doctors))
 	c.JSON(200, resp)
 }
 
 // @Router /admin/doctors/{id} [put]
 // @Summary UPDATE DOCTOR
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method updates doctor
 // @Tags DOCTORS
 // @Accept json
@@ -378,25 +437,28 @@ func (h *HandlerST) ListDoctors(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) UpdateDoctor(c *gin.Context) {
 
-	req := pb.UpdateDoctorRequest{}
-	req.Id = c.Param("id")
-
+	req := pb.UpdateDoctorRequest{Id: c.Param("id")}
 	if err := c.BindJSON(&req); err != nil {
+		h.log.Error("failed to bind request in UpdateDoctor", "id", req.Id, "error", err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
+	h.log.Info("UpdateDoctor request received", "id", req.Id, "request", req.Id)
 
 	resp, err := h.service.UpdateDoctor(context.Background(), &req)
 	if err != nil {
+		h.log.Error("failed to update doctor", "id", req.Id, "error", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("UpdateDoctor successful", "id", req.Id, "response", resp)
 	c.JSON(200, resp)
 }
 
 // @Router /admin/doctors/{id} [delete]
 // @Summary DELETE DOCTOR
-// @Security  		BearerAuth
+// @Security BearerAuth
 // @Description This method deletes doctor
 // @Tags DOCTORS
 // @Accept json
@@ -407,14 +469,17 @@ func (h *HandlerST) UpdateDoctor(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) DeleteDoctor(c *gin.Context) {
 
-	req := pb.DeletePersonalRequest{}
-	req.Id = c.Param("id")
+	req := pb.DeletePersonalRequest{Id: c.Param("id")}
+	h.log.Info("DeleteDoctor request received", "id", req.Id)
 
 	resp, err := h.service.DeleteDoctor(context.Background(), &req)
 	if err != nil {
+		h.log.Error("failed to delete doctor", "id", req.Id, "error", err)
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("DeleteDoctor successful", "id", req.Id, "response", resp)
 	c.JSON(200, resp)
 }
 
@@ -431,16 +496,23 @@ func (h *HandlerST) DeleteDoctor(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) CreateBed(c *gin.Context) {
 
+	h.log.Info("CreateBed: request received")
+
 	req := pb.CreateBedRequest{}
 	if err := c.BindJSON(&req); err != nil {
+		h.log.WithError(err).Warn("CreateBed: invalid request body")
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
+
 	resp, err := h.service.CreateBed(context.Background(), &req)
 	if err != nil {
+		h.log.WithError(err).Error("CreateBed: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.WithField("bed_id", resp.Bed.Id).Info("CreateBed: success")
 	c.JSON(200, resp)
 }
 
@@ -457,14 +529,18 @@ func (h *HandlerST) CreateBed(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) GetBedById(c *gin.Context) {
 
-	req := pb.GetBedByIDRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.WithField("id", id).Info("GetBedById: request received")
 
+	req := pb.GetBedByIDRequest{Id: id}
 	resp, err := h.service.GetBedByID(context.Background(), &req)
 	if err != nil {
+		h.log.WithError(err).Error("GetBedById: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.WithField("bed_id", resp.Bed.Id).Info("GetBedById: success")
 	c.JSON(200, resp)
 }
 
@@ -483,20 +559,30 @@ func (h *HandlerST) GetBedById(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) ListBeds(c *gin.Context) {
 
-	req := pb.ListBedSRequest{}
-	search := c.Query("search")
-	req.Search = strings.TrimSpace(search)
-
+	search := strings.TrimSpace(c.Query("search"))
 	page, _ := strconv.Atoi(c.Query("page"))
 	limit, _ := strconv.Atoi(c.Query("limit"))
-	req.Page = int32(page)
-	req.Limit = int32(limit)
+
+	h.log.WithFields(logrus.Fields{
+		"search": search,
+		"page":   page,
+		"limit":  limit,
+	}).Info("ListBeds: request received")
+
+	req := pb.ListBedSRequest{
+		Search: search,
+		Page:   int32(page),
+		Limit:  int32(limit),
+	}
 
 	resp, err := h.service.ListBedS(context.Background(), &req)
 	if err != nil {
+		h.log.WithError(err).Error("ListBeds: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.WithField("count", len(resp.Beds)).Info("ListBeds: success")
 	c.JSON(200, resp)
 }
 
@@ -514,19 +600,24 @@ func (h *HandlerST) ListBeds(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) UpdateBed(c *gin.Context) {
 
-	req := pb.UpdateBedRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.WithField("id", id).Info("UpdateBed: request received")
 
+	req := pb.UpdateBedRequest{Id: id}
 	if err := c.BindJSON(&req); err != nil {
+		h.log.WithError(err).Warn("UpdateBed: invalid request body")
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
 	resp, err := h.service.UpdateBed(context.Background(), &req)
 	if err != nil {
+		h.log.WithError(err).Error("UpdateBed: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.WithField("bed_id", resp.Bed.Id).Info("UpdateBed: success")
 	c.JSON(200, resp)
 }
 
@@ -542,14 +633,17 @@ func (h *HandlerST) UpdateBed(c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 func (h *HandlerST) DeleteBed(c *gin.Context) {
-	
-	req := pb.DeleteBedRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.WithField("id", id).Info("DeleteBed: request received")
 
+	req := pb.DeleteBedRequest{Id: id}
 	resp, err := h.service.DeleteBed(context.Background(), &req)
 	if err != nil {
+		h.log.WithError(err).Error("DeleteBed: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.WithField("bed_id", id).Info("DeleteBed: success")
 	c.JSON(200, resp)
 }

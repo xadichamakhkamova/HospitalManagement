@@ -2,14 +2,18 @@ package handler
 
 import (
 	"api-gateway/internal/service"
+
+	"github.com/sirupsen/logrus"
 )
 
 type HandlerST struct {
-	service     *service.ServiceRepositoryClient
+	service *service.ServiceRepositoryClient
+	log     *logrus.Logger
 }
 
-func NewApiHandler(service *service.ServiceRepositoryClient) *HandlerST {
+func NewApiHandler(service *service.ServiceRepositoryClient, log *logrus.Logger) *HandlerST {
 	return &HandlerST{
-		service:     service,
+		service: service,
+		log:     log,
 	}
 }

@@ -22,17 +22,23 @@ import (
 // @Failure 500 {object} string
 func (h *HandlerST) CreateMedicine(c *gin.Context) {
 
+	h.log.Info("CreateMedicine: request received")
+
 	req := pb.CreateMedicineRequest{}
 	if err := c.BindJSON(&req); err != nil {
+		h.log.Error("CreateMedicine: invalid request body")
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
 	resp, err := h.service.CreateMedicine(context.Background(), &req)
 	if err != nil {
+		h.log.Error("CreateMedicine: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("CreateMedicine: success, id=" + resp.Medicine.Id)
 	c.JSON(200, resp)
 }
 
@@ -49,16 +55,21 @@ func (h *HandlerST) CreateMedicine(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) GetMedicineById(c *gin.Context) {
 
-	req := pb.GetMedicineByIdRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.Info("GetMedicineById: request id=" + id)
 
+	req := pb.GetMedicineByIdRequest{Id: id}
 	resp, err := h.service.GetMedicineById(context.Background(), &req)
 	if err != nil {
+		h.log.Error("GetMedicineById: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("GetMedicineById: success, id=" + resp.Medicine.Id)
 	c.JSON(200, resp)
 }
+
 
 // @Router /pharmacist/medicines [get]
 // @Summary GET MEDICINES LIST
@@ -76,9 +87,11 @@ func (h *HandlerST) GetMedicineById(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) ListMedicines(c *gin.Context) {
 
-	req := pb.ListMedicinesRequest{}
-	req.Search = c.Query("search")
+	h.log.Info("ListMedicines: request received")
 
+	req := pb.ListMedicinesRequest{
+		Search: c.Query("search"),
+	}
 	if c.Query("status") != "" {
 		req.Status = pb.MedicineStatus(pb.MedicineStatus_value[c.Query("status")])
 	}
@@ -90,11 +103,15 @@ func (h *HandlerST) ListMedicines(c *gin.Context) {
 
 	resp, err := h.service.ListMedicines(context.Background(), &req)
 	if err != nil {
+		h.log.Error("ListMedicines: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Infof("ListMedicines: success, count=%d", len(resp.Medicines))
 	c.JSON(200, resp)
 }
+
 
 // @Router /pharmacist/medicines/{id} [put]
 // @Summary UPDATE MEDICINE
@@ -110,19 +127,24 @@ func (h *HandlerST) ListMedicines(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) UpdateMedicine(c *gin.Context) {
 
-	req := pb.UpdateMedicineRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.Info("UpdateMedicine: request id=" + id)
 
+	req := pb.UpdateMedicineRequest{Id: id}
 	if err := c.BindJSON(&req); err != nil {
+		h.log.Error("UpdateMedicine: invalid request body")
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
 	resp, err := h.service.UpdateMedicine(context.Background(), &req)
 	if err != nil {
+		h.log.Error("UpdateMedicine: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("UpdateMedicine: success, id=" + resp.Medicine.Id)
 	c.JSON(200, resp)
 }
 
@@ -139,13 +161,17 @@ func (h *HandlerST) UpdateMedicine(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) DeleteMedicine(c *gin.Context) {
 	
-	req := pb.DeleteMedicineRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.Info("DeleteMedicine: request id=" + id)
 
-	resp, err := h.service.DeleteMedicine(context.Background(), &req)
+	req := pb.DeleteMedicineRequest{Id: id}
+	_, err := h.service.DeleteMedicine(context.Background(), &req)
 	if err != nil {
+		h.log.Error("DeleteMedicine: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(200, resp)
+
+	h.log.Info("DeleteMedicine: success, id=" + id)
+	c.JSON(200, gin.H{"status": "deleted"})
 }

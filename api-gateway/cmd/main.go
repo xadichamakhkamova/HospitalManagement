@@ -65,7 +65,7 @@ func main() {
 	clientService := service.NewServiceRepositoryClient(conn1, conn2, conn3, conn4, conn5)
 	log.Info("Service clients initialized")
 
-	srv := api.NewGin(clientService, cfg.ApiGateway.Port)
+	srv := api.NewGin(clientService, cfg.ApiGateway.Port, log)
 	addr := fmt.Sprintf(":%d", cfg.ApiGateway.Port)
 
 	sigChan := make(chan os.Signal, 1)

@@ -21,17 +21,23 @@ import (
 // @Failure 500 {object} string
 func (h *HandlerST) CreateDonor(c *gin.Context) {
 
+	h.log.Info("CreateDonor: request received")
+
 	req := pb.CreateDonorRequest{}
 	if err := c.BindJSON(&req); err != nil {
+		h.log.WithError(err).Warn("CreateDonor: invalid request body")
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
 	resp, err := h.service.CreateDonor(context.Background(), &req)
 	if err != nil {
+		h.log.WithError(err).Error("CreateDonor: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.WithField("donor_id", resp.Donor.Id).Info("CreateDonor: success")
 	c.JSON(200, resp)
 }
 
@@ -48,14 +54,18 @@ func (h *HandlerST) CreateDonor(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) GetDonorById(c *gin.Context) {
 
-	req := pb.GetDonorByIdRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.WithField("id", id).Info("GetDonorById: request received")
 
+	req := pb.GetDonorByIdRequest{Id: id}
 	resp, err := h.service.GetDonorById(context.Background(), &req)
 	if err != nil {
+		h.log.WithError(err).Error("GetDonorById: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.WithField("donor_id", resp.Donor.Id).Info("GetDonorById: success")
 	c.JSON(200, resp)
 }
 
@@ -77,11 +87,13 @@ func (h *HandlerST) GetDonorById(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) ListDonors(c *gin.Context) {
 
-	req := pb.ListDonorsRequest{}
-	req.Search = c.Query("search")
-	req.Gender = c.Query("gender")
-	req.BloodGroup = c.Query("blood_group")
+	h.log.Info("ListDonors: request received")
 
+	req := pb.ListDonorsRequest{
+		Search:     c.Query("search"),
+		Gender:     c.Query("gender"),
+		BloodGroup: c.Query("blood_group"),
+	}
 	if c.Query("only_eligible") == "true" {
 		req.OnlyEligible = true
 	}
@@ -93,11 +105,15 @@ func (h *HandlerST) ListDonors(c *gin.Context) {
 
 	resp, err := h.service.ListDonors(context.Background(), &req)
 	if err != nil {
+		h.log.Error("ListDonors: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Infof("ListDonors: success, count=%d", len(resp.Patients))
 	c.JSON(200, resp)
 }
+
 
 // @Router /nurse/donors/{id} [put]
 // @Summary UPDATE DONOR
@@ -113,21 +129,27 @@ func (h *HandlerST) ListDonors(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) UpdateDonor(c *gin.Context) {
 
-	req := pb.UpdateDonorRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.Info("UpdateDonor: request id=" + id)
 
+	req := pb.UpdateDonorRequest{Id: id}
 	if err := c.BindJSON(&req); err != nil {
+		h.log.Error("UpdateDonor: invalid request body")
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
 	resp, err := h.service.UpdateDonor(context.Background(), &req)
 	if err != nil {
+		h.log.Error("UpdateDonor: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("UpdateDonor: success, id=" + resp.Donor.Id)
 	c.JSON(200, resp)
 }
+
 
 // @Router /nurse/donors/{id} [delete]
 // @Summary DELETE DONOR
@@ -142,13 +164,17 @@ func (h *HandlerST) UpdateDonor(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) DeleteDonor(c *gin.Context) {
 	
-	req := pb.DeleteDonorRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.Info("DeleteDonor: request id=" + id)
 
-	resp, err := h.service.DeleteDonor(context.Background(), &req)
+	req := pb.DeleteDonorRequest{Id: id}
+	_, err := h.service.DeleteDonor(context.Background(), &req)
 	if err != nil {
+		h.log.Error("DeleteDonor: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(200, resp)
+
+	h.log.Info("DeleteDonor: success, id=" + id)
+	c.JSON(200, gin.H{"status": "deleted"})
 }

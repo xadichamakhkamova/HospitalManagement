@@ -1,4 +1,4 @@
-package https 
+package https
 
 import (
 	"api-gateway/internal/https/handler"
@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -20,11 +21,11 @@ import (
 // @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
-func NewGin(service *service.ServiceRepositoryClient, port int) *http.Server {
+func NewGin(service *service.ServiceRepositoryClient, port int, log *logrus.Logger) *http.Server {
 
 	r := gin.Default()
 
-	apiHandler := handler.NewApiHandler(service)
+	apiHandler := handler.NewApiHandler(service, log)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

@@ -21,17 +21,23 @@ import (
 // @Failure 500 {object} string
 func (h *HandlerST) CreatePatient(c *gin.Context) {
 
+	h.log.Info("CreatePatient: request received")
+
 	req := pb.CreatePatientRequest{}
 	if err := c.BindJSON(&req); err != nil {
+		h.log.Error("CreatePatient: invalid request body")
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
 	resp, err := h.service.CreatePatient(context.Background(), &req)
 	if err != nil {
+		h.log.Error("CreatePatient: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("CreatePatient: success, id=" + resp.Patient.Id)
 	c.JSON(200, resp)
 }
 
@@ -48,16 +54,21 @@ func (h *HandlerST) CreatePatient(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) GetPatientById(c *gin.Context) {
 
-	req := pb.GetPatientByIdRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.Info("GetPatientById: request id=" + id)
 
+	req := pb.GetPatientByIdRequest{Id: id}
 	resp, err := h.service.GetPatientById(context.Background(), &req)
 	if err != nil {
+		h.log.Error("GetPatientById: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("GetPatientById: success, id=" + resp.Patient.Id)
 	c.JSON(200, resp)
 }
+
 
 // @Router /patient/patients [get]
 // @Summary GET PATIENTS LIST
@@ -74,8 +85,11 @@ func (h *HandlerST) GetPatientById(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) ListPatients(c *gin.Context) {
 
-	req := pb.ListPatientsRequest{}
-	req.Search = c.Query("search")
+	h.log.Info("ListPatients: request received")
+
+	req := pb.ListPatientsRequest{
+		Search: c.Query("search"),
+	}
 
 	page, _ := strconv.Atoi(c.Query("page"))
 	limit, _ := strconv.Atoi(c.Query("limit"))
@@ -84,9 +98,12 @@ func (h *HandlerST) ListPatients(c *gin.Context) {
 
 	resp, err := h.service.ListPatients(context.Background(), &req)
 	if err != nil {
+		h.log.Error("ListPatients: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Infof("ListPatients: success, count=%d", len(resp.Patients))
 	c.JSON(200, resp)
 }
 
@@ -104,19 +121,24 @@ func (h *HandlerST) ListPatients(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) UpdatePatient(c *gin.Context) {
 
-	req := pb.UpdatePatientRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.Info("UpdatePatient: request id=" + id)
 
+	req := pb.UpdatePatientRequest{Id: id}
 	if err := c.BindJSON(&req); err != nil {
+		h.log.Error("UpdatePatient: invalid request body")
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
 	resp, err := h.service.UpdatePatient(context.Background(), &req)
 	if err != nil {
+		h.log.Error("UpdatePatient: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+
+	h.log.Info("UpdatePatient: success, id=" + resp.Patient.Id)
 	c.JSON(200, resp)
 }
 
@@ -133,13 +155,17 @@ func (h *HandlerST) UpdatePatient(c *gin.Context) {
 // @Failure 500 {object} string
 func (h *HandlerST) DeletePatient(c *gin.Context) {
 	
-	req := pb.DeletePatientRequest{}
-	req.Id = c.Param("id")
+	id := c.Param("id")
+	h.log.Info("DeletePatient: request id=" + id)
 
-	resp, err := h.service.DeletePatient(context.Background(), &req)
+	req := pb.DeletePatientRequest{Id: id}
+	_, err := h.service.DeletePatient(context.Background(), &req)
 	if err != nil {
+		h.log.Error("DeletePatient: service error")
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(200, resp)
+
+	h.log.Info("DeletePatient: success, id=" + id)
+	c.JSON(200, gin.H{"status": "deleted"})
 }
