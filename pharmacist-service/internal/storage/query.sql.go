@@ -160,10 +160,10 @@ FROM
     medicines
 WHERE deleted_at IS NULL
     AND (
-        $1::search IS NULL  -- :search - frontenddan kelgan parametr. NULL bolsa, barcha datalarni qaytaradi. Agar bosh bolmasa name, category, company ustunlarida qidirishni boshlaydi.
-        OR LOWER(name) LIKE LOWER(CONCAT('%', $1::search, '%')) --LOWER - barcha harflarni kichkina qilib oladi. 
-        OR LOWER(category) LIKE LOWER(CONCAT('%', $1::search, '%')) -- CONCAT('%', :search, '%') - example: %aspirin% qilib qidiradi, yani matn ichida qayerdan bolmasin topadi.
-        OR LOWER(company) LIKE LOWER(CONCAT('%', $1::search, '%'))
+        $1::text=''  -- :text - frontenddan kelgan parametr. '' bolsa, barcha datalarni qaytaradi. Agar bosh bolmasa name, category, company ustunlarida qidirishni boshlaydi.
+        OR LOWER(name) LIKE LOWER(CONCAT('%', $1::text, '%')) --LOWER - barcha harflarni kichkina qilib oladi. 
+        OR LOWER(category) LIKE LOWER(CONCAT('%', $1::text, '%')) -- CONCAT('%', :search, '%') - example: %aspirin% qilib qidiradi, yani matn ichida qayerdan bolmasin topadi.
+        OR LOWER(company) LIKE LOWER(CONCAT('%', $1::text, '%'))
     )
     AND ($2::status IS NULL OR status = $2::status) -- agar stus NULL bolsa barcha yozuvlar olinadi, bolmasa taqqoslaydi.
 ORDER BY
@@ -173,7 +173,7 @@ OFFSET ($4 - 1) * $3
 `
 
 type ListMedicinesParams struct {
-	Column1 interface{}
+	Column1 string
 	Column2 interface{}
 	Limit   int32
 	Column4 interface{}

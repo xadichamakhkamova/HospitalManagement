@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	pb "github.com/xadichamakhkamova/HospitalContracts/genproto/doctorpb"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 // @Router /doctors/appointments [post]
@@ -108,7 +107,7 @@ func (h *HandlerST) ListAppointments(c *gin.Context) {
 			c.JSON(400, gin.H{"error": "invalid date format, use RFC3339 (e.g. 2025-09-12T15:04:05Z)"})
 			return
 		}
-		req.Date = timestamppb.New(parsedDate)
+		req.Date = parsedDate.String()
 	}
 
 	resp, err := h.service.ListAppointments(context.Background(), &req)
@@ -333,7 +332,7 @@ func (h *HandlerST) UpdatePrescription(c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 func (h *HandlerST) DeletePrescription(c *gin.Context) {
-	
+
 	id := c.Param("id")
 	h.log.WithField("id", id).Info("DeletePrescription: request received")
 

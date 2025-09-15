@@ -9,9 +9,8 @@ require (
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.1
 	github.com/swaggo/swag v1.8.12
-	github.com/xadichamakhkamova/HospitalContracts v0.0.0-20250912075412-7e9fcc2f654d
+	github.com/xadichamakhkamova/HospitalContracts v0.0.0-20250915174854-f60dae840a83
 	google.golang.org/grpc v1.75.0
-	google.golang.org/protobuf v1.36.8
 )
 
 require (
@@ -58,6 +57,7 @@ require (
 	golang.org/x/text v0.28.0 // indirect
 	golang.org/x/tools v0.35.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250707201910-8d1bb00bc6a7 // indirect
+	google.golang.org/protobuf v1.36.8 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

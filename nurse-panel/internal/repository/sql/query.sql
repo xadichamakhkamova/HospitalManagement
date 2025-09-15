@@ -81,11 +81,11 @@ FROM
 WHERE 
     deleted_at IS NULL
     AND (
-        $1::search  IS NULL 
-        OR LOWER(full_name) LIKE LOWER(CONCAT('%', $1::search , '%')) 
-        OR LOWER(email) LIKE LOWER(CONCAT('%', $1::search , '%')) 
-        OR LOWER(gender) LIKE LOWER(CONCAT('%', $1::search , '%')) 
-        OR LOWER(blood_group) LIKE LOWER(CONCAT('%', $1::search , '%'))
+        $1::text=''
+        OR LOWER(full_name) LIKE LOWER(CONCAT('%', $1::text , '%')) 
+        OR LOWER(email) LIKE LOWER(CONCAT('%', $1::text , '%')) 
+        OR LOWER(gender) LIKE LOWER(CONCAT('%', $1::text , '%')) 
+        OR LOWER(blood_group) LIKE LOWER(CONCAT('%', $1::text , '%'))
     )
     AND (
         $2::only_eligible = FALSE 

@@ -222,11 +222,11 @@ FROM
 WHERE 
     deleted_at IS NULL
     AND (
-        $1::search  IS NULL 
-        OR LOWER(full_name) LIKE LOWER(CONCAT('%', $1::search , '%')) 
-        OR LOWER(email) LIKE LOWER(CONCAT('%', $1::search , '%')) 
-        OR LOWER(gender) LIKE LOWER(CONCAT('%', $1::search , '%')) 
-        OR LOWER(blood_group) LIKE LOWER(CONCAT('%', $1::search , '%'))
+        $1::text=''
+        OR LOWER(full_name) LIKE LOWER(CONCAT('%', $1::text , '%')) 
+        OR LOWER(email) LIKE LOWER(CONCAT('%', $1::text , '%')) 
+        OR LOWER(gender) LIKE LOWER(CONCAT('%', $1::text , '%')) 
+        OR LOWER(blood_group) LIKE LOWER(CONCAT('%', $1::text , '%'))
     )
     AND (
         $2::only_eligible = FALSE 
@@ -239,7 +239,7 @@ OFFSET ($4 - 1) * $3
 `
 
 type ListDonorsParams struct {
-	Column1 interface{}
+	Column1 string
 	Column2 interface{}
 	Limit   int32
 	Column4 interface{}

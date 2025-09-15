@@ -368,8 +368,8 @@ FROM
     departments 
 WHERE deleted_at IS NULL 
     AND (   
-        $1::search IS NULL
-        OR LOWER(name) LIKE LOWER(CONCAT('%', $1::search, '%'))
+        $1::text='' 
+        OR LOWER(name) LIKE LOWER(CONCAT('%', $1::text, '%'))
     ) 
 ORDER BY 
     created_at DESC 
@@ -378,7 +378,7 @@ OFFSET ($3 - 1) * $2
 `
 
 type ListDepartmentsParams struct {
-	Column1 interface{}
+	Column1 string
 	Limit   int32
 	Column3 interface{}
 }
@@ -442,9 +442,9 @@ FROM doctors d
 JOIN personals p ON d.personal_id = p.id
 WHERE d.deleted_at IS NULL AND p.deleted_at IS NULL
   AND (
-      $1::search IS NULL 
-      OR LOWER(p.profession) LIKE LOWER(CONCAT('%', $1::search, '%'))
-      OR LOWER(p.full_name) LIKE LOWER(CONCAT('%', $1::search, '%'))
+      $1::text=''
+      OR LOWER(p.profession) LIKE LOWER(CONCAT('%', $1::text, '%'))
+      OR LOWER(p.full_name) LIKE LOWER(CONCAT('%', $1::text, '%'))
   )
 ORDER BY d.created_at DESC
 LIMIT $2
@@ -452,7 +452,7 @@ OFFSET ($3 - 1) * $2
 `
 
 type ListDoctorsParams struct {
-	Column1 interface{}
+	Column1 string
 	Limit   int32
 	Column3 interface{}
 }
@@ -524,9 +524,9 @@ FROM
     personals 
 WHERE deleted_at IS NULL 
     AND (
-        $1::search IS NULL 
-        OR LOWER(profession) LIKE LOWER(CONCAT('%', $1::search, '%'))
-        OR LOWER(full_name) LIKE LOWER(CONCAT('%', $1::search, '%'))
+        $1::text='' 
+        OR LOWER(profession) LIKE LOWER(CONCAT('%', $1::text, '%'))
+        OR LOWER(full_name) LIKE LOWER(CONCAT('%', $1::text, '%'))
     ) 
 ORDER BY 
     created_at DESC 
@@ -535,7 +535,7 @@ OFFSET ($3 - 1) * $2
 `
 
 type ListPersonalsParams struct {
-	Column1 interface{}
+	Column1 string
 	Limit   int32
 	Column3 interface{}
 }

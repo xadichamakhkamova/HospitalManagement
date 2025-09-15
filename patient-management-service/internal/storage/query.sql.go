@@ -181,10 +181,10 @@ FROM
     patients
 WHERE deleted_at IS NULL
     AND (
-        $1::search IS NULL 
-        OR LOWER(full_name) LIKE LOWER(CONCAT('%', $1::search, '%')) 
-        OR LOWER(email) LIKE LOWER(CONCAT('%', $1::search, '%')) 
-        OR LOWER(gender) LIKE LOWER(CONCAT('%', $1::search, '%'))
+        $1::text=''
+        OR LOWER(full_name) LIKE LOWER(CONCAT('%', $1::text, '%')) 
+        OR LOWER(email) LIKE LOWER(CONCAT('%', $1::text, '%')) 
+        OR LOWER(gender) LIKE LOWER(CONCAT('%', $1::text, '%'))
     )
 ORDER BY 
     created_at DESC 
@@ -193,7 +193,7 @@ OFFSET ($3 - 1) * $2
 `
 
 type ListPatientsParams struct {
-	Column1 interface{}
+	Column1 string
 	Limit   int32
 	Column3 interface{}
 }
