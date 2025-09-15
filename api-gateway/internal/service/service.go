@@ -101,28 +101,6 @@ func (s *ServiceRepositoryClient) DeleteDoctor(ctx context.Context, req *pbAdmin
 	return s.adminClient.DeleteDoctor(ctx, req)
 }
 
-// ------------------- Bed -------------------
-
-func (s *ServiceRepositoryClient) CreateBed(ctx context.Context, req *pbAdmin.CreateBedRequest) (*pbAdmin.CreateBedResponse, error) {
-	return s.adminClient.CreateBed(ctx, req)
-}
-
-func (s *ServiceRepositoryClient) GetBedByID(ctx context.Context, req *pbAdmin.GetBedByIDRequest) (*pbAdmin.GetBedByIDResponse, error) {
-	return s.adminClient.GetBedByID(ctx, req)
-}
-
-func (s *ServiceRepositoryClient) ListBedS(ctx context.Context, req *pbAdmin.ListBedSRequest) (*pbAdmin.ListBedSResponse, error) {
-	return s.adminClient.ListBedS(ctx, req)
-}
-
-func (s *ServiceRepositoryClient) UpdateBed(ctx context.Context, req *pbAdmin.UpdateBedRequest) (*pbAdmin.UpdateBedResponse, error) {
-	return s.adminClient.UpdateBed(ctx, req)
-}
-
-func (s *ServiceRepositoryClient) DeleteBed(ctx context.Context, req *pbAdmin.DeleteBedRequest) (*pbAdmin.DeleteBedResponse, error) {
-	return s.adminClient.DeleteBed(ctx, req)
-}
-
 //! Doctor Service
 // ------------------- Appointment -------------------
 

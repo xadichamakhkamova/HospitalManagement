@@ -83,25 +83,3 @@ func (s *AdminService) UpdateDoctor(ctx context.Context, req *pb.UpdateDoctorReq
 func (s *AdminService) DeleteDoctor(ctx context.Context, req *pb.DeletePersonalRequest) (*pb.DeletePersonalResponse, error) {
 	return s.repo.DeleteDoctor(ctx, req)
 }
-
-// ------------------- Bed -------------------
-
-func (s *AdminService) CreateBed(ctx context.Context, req *pb.CreateBedRequest) (*pb.CreateBedResponse, error) {
-	return s.repo.CreateBed(ctx, req)
-}
-
-func (s *AdminService) GetBedByID(ctx context.Context, req *pb.GetBedByIDRequest) (*pb.GetBedByIDResponse, error) {
-	return s.repo.GetBedByID(ctx, req)
-}
-
-func (s *AdminService) ListBedS(ctx context.Context, req *pb.ListBedSRequest) (*pb.ListBedSResponse, error) {
-	return s.repo.ListBedS(ctx, req)
-}
-
-func (s *AdminService) UpdateBed(ctx context.Context, req *pb.UpdateBedRequest) (*pb.UpdateBedResponse, error) {
-	return s.repo.UpdateBed(ctx, req)
-}
-
-func (s *AdminService) DeleteBed(ctx context.Context, req *pb.DeleteBedRequest) (*pb.DeleteBedResponse, error) {
-	return s.repo.DeleteBed(ctx, req)
-}

@@ -12,57 +12,6 @@ import (
 	"github.com/google/uuid"
 )
 
-const createBed = `-- name: CreateBed :one
-
-INSERT INTO beds 
-    (
-       bed_number,
-       bed_type,
-       description 
-    ) 
-VALUES($1, $2, $3)
-RETURNING 
-    id,
-    bed_number,
-    bed_type,
-    description,
-    status,
-    created_at,
-    updated_at
-`
-
-type CreateBedParams struct {
-	BedNumber   int64
-	BedType     BedType
-	Description string
-}
-
-type CreateBedRow struct {
-	ID          uuid.UUID
-	BedNumber   int64
-	BedType     BedType
-	Description string
-	Status      BedStatus
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
-}
-
-// -------------- BED CRUD ----------------
-func (q *Queries) CreateBed(ctx context.Context, arg CreateBedParams) (CreateBedRow, error) {
-	row := q.db.QueryRowContext(ctx, createBed, arg.BedNumber, arg.BedType, arg.Description)
-	var i CreateBedRow
-	err := row.Scan(
-		&i.ID,
-		&i.BedNumber,
-		&i.BedType,
-		&i.Description,
-		&i.Status,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const createDepartment = `-- name: CreateDepartment :one
 
 INSERT INTO departments 
@@ -222,22 +171,6 @@ func (q *Queries) CreatePersonal(ctx context.Context, arg CreatePersonalParams) 
 	return i, err
 }
 
-const deleteBed = `-- name: DeleteBed :exec
-UPDATE beds
-SET deleted_at = $2
-WHERE id = $1
-`
-
-type DeleteBedParams struct {
-	ID        uuid.UUID
-	DeletedAt sql.NullTime
-}
-
-func (q *Queries) DeleteBed(ctx context.Context, arg DeleteBedParams) error {
-	_, err := q.db.ExecContext(ctx, deleteBed, arg.ID, arg.DeletedAt)
-	return err
-}
-
 const deleteDepartment = `-- name: DeleteDepartment :exec
 UPDATE departments
 SET deleted_at = $2
@@ -284,46 +217,6 @@ type DeletePersonalParams struct {
 func (q *Queries) DeletePersonal(ctx context.Context, arg DeletePersonalParams) error {
 	_, err := q.db.ExecContext(ctx, deletePersonal, arg.ID, arg.DeletedAt)
 	return err
-}
-
-const getBedByID = `-- name: GetBedByID :one
-SELECT 
-    id,
-    bed_number,
-    bed_type,
-    description,
-    status,
-    created_at,
-    updated_at
-FROM 
-    beds
-WHERE id = $1
-  AND deleted_at IS NULL
-`
-
-type GetBedByIDRow struct {
-	ID          uuid.UUID
-	BedNumber   int64
-	BedType     BedType
-	Description string
-	Status      BedStatus
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
-}
-
-func (q *Queries) GetBedByID(ctx context.Context, id uuid.UUID) (GetBedByIDRow, error) {
-	row := q.db.QueryRowContext(ctx, getBedByID, id)
-	var i GetBedByIDRow
-	err := row.Scan(
-		&i.ID,
-		&i.BedNumber,
-		&i.BedType,
-		&i.Description,
-		&i.Status,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
 }
 
 const getDepartmentById = `-- name: GetDepartmentById :one
@@ -460,86 +353,6 @@ func (q *Queries) GetPersonalById(ctx context.Context, id uuid.UUID) (GetPersona
 		&i.UpdatedAt,
 	)
 	return i, err
-}
-
-const listBeds = `-- name: ListBeds :many
-SELECT 
-    id,
-    bed_number,
-    bed_type,
-    description,
-    status,
-    created_at,
-    updated_at,
-    COUNT(*) OVER() AS total_count
-FROM 
-    beds
-WHERE deleted_at IS NULL 
-    AND (
-        $1::search IS NULL
-        OR LOWER(bed_number::text) LIKE LOWER(CONCAT('%', $1::search, '%'))
-        OR LOWER(bed_type) LIKE LOWER(CONCAT('%', $1::search, '%'))
-    )
-  AND ($2::status IS NULL OR status = $2::status)
-ORDER BY 
-    created_at DESC
-LIMIT $3
-OFFSET ($4 - 1) * $3
-`
-
-type ListBedsParams struct {
-	Column1 interface{}
-	Column2 interface{}
-	Limit   int32
-	Column4 interface{}
-}
-
-type ListBedsRow struct {
-	ID          uuid.UUID
-	BedNumber   int64
-	BedType     BedType
-	Description string
-	Status      BedStatus
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
-	TotalCount  int64
-}
-
-func (q *Queries) ListBeds(ctx context.Context, arg ListBedsParams) ([]ListBedsRow, error) {
-	rows, err := q.db.QueryContext(ctx, listBeds,
-		arg.Column1,
-		arg.Column2,
-		arg.Limit,
-		arg.Column4,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []ListBedsRow
-	for rows.Next() {
-		var i ListBedsRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.BedNumber,
-			&i.BedType,
-			&i.Description,
-			&i.Status,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.TotalCount,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
 }
 
 const listDepartments = `-- name: ListDepartments :many
@@ -772,67 +585,6 @@ func (q *Queries) ListPersonals(ctx context.Context, arg ListPersonalsParams) ([
 		return nil, err
 	}
 	return items, nil
-}
-
-const updateBed = `-- name: UpdateBed :one
-UPDATE beds
-SET 
-    bed_number = $2,
-    bed_type = $3,
-    description = $4,
-    status = $5,
-    updated_at =$6
-WHERE id = $1
-  AND deleted_at IS NULL
-RETURNING 
-    id,
-    bed_number,
-    bed_type,
-    description,
-    status,
-    created_at,
-    updated_at
-`
-
-type UpdateBedParams struct {
-	ID          uuid.UUID
-	BedNumber   int64
-	BedType     BedType
-	Description string
-	Status      BedStatus
-	UpdatedAt   sql.NullTime
-}
-
-type UpdateBedRow struct {
-	ID          uuid.UUID
-	BedNumber   int64
-	BedType     BedType
-	Description string
-	Status      BedStatus
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
-}
-
-func (q *Queries) UpdateBed(ctx context.Context, arg UpdateBedParams) (UpdateBedRow, error) {
-	row := q.db.QueryRowContext(ctx, updateBed,
-		arg.ID,
-		arg.BedNumber,
-		arg.BedType,
-		arg.Description,
-		arg.Status,
-		arg.UpdatedAt,
-	)
-	var i UpdateBedRow
-	err := row.Scan(
-		&i.ID,
-		&i.BedNumber,
-		&i.BedType,
-		&i.Description,
-		&i.Status,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
 }
 
 const updateDepartment = `-- name: UpdateDepartment :one

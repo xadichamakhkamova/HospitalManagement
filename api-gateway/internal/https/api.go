@@ -52,13 +52,6 @@ func NewGin(service *service.ServiceRepositoryClient, port int, log *logrus.Logg
 		admin.GET("/doctors", apiHandler.ListDoctors)
 		admin.PUT("/doctors/:id", apiHandler.UpdateDoctor)
 		admin.DELETE("/doctors/:id", apiHandler.DeleteDoctor)
-
-		// Bed
-		admin.POST("/beds", apiHandler.CreateBed)
-		admin.GET("/beds/:id", apiHandler.GetBedById)
-		admin.GET("/beds", apiHandler.ListBeds)
-		admin.PUT("/beds/:id", apiHandler.UpdateBed)
-		admin.DELETE("/beds/:id", apiHandler.DeleteBed)
 	}
 
 	//! Doctor Service

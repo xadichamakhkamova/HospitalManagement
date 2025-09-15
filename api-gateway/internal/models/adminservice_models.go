@@ -2,25 +2,6 @@ package models
 
 import "time"
 
-type BedStatus string
-
-const (
-	BedUnspecified  BedStatus = "BED_UNSPECIFIED"
-	BedAvailable    BedStatus = "BED_AVAILABLE"
-	BedOccupied     BedStatus = "BED_OCCUPIED"
-	BedReserved     BedStatus = "BED_RESERVED"
-	BedMaintenance  BedStatus = "BED_MAINTENANCE"
-)
-
-type BedType string
-
-const (
-	BedTypeUnspecified BedType = "BED_TYPE_UNSPECIFIED"
-	General            BedType = "GENERAL"
-	Personall           BedType = "PERSONAL"
-	ICU                BedType = "ICU"
-	Surgical           BedType = "SURGICAL"
-)
 
 type Timestamps1 struct {
 	CreatedAt time.Time `json:"created_at"`
@@ -53,14 +34,6 @@ type Doctor struct {
 	Timestamps       Timestamps1 `json:"timestamps"`
 }
 
-type BedInfo struct {
-	ID          string      `json:"id"`
-	BedNumber   int64       `json:"bed_number"`
-	BedType     BedType     `json:"bed_type"`
-	Description string      `json:"description"`
-	Status      BedStatus   `json:"status"`
-	Timestamps  Timestamps1 `json:"timestamps"`
-}
 
 // -------- Department --------
 type CreateDepartmentRequest struct {
@@ -183,51 +156,5 @@ type DeletePersonalRequest struct {
 	ID string `json:"id"`
 }
 type DeletePersonalResponse struct {
-	Status int64 `json:"status"`
-}
-
-// -------- Bed --------
-type CreateBedRequest struct {
-	BedNumber   int64   `json:"bed_number"`
-	BedType     BedType `json:"bed_type"`
-	Description string  `json:"description"`
-}
-type CreateBedResponse struct {
-	Bed BedInfo `json:"bed"`
-}
-
-type GetBedByIDRequest struct {
-	ID string `json:"id"`
-}
-type GetBedByIDResponse struct {
-	Bed BedInfo `json:"bed"`
-}
-
-type ListBedsRequest struct {
-	Search string    `json:"search"`
-	Status BedStatus `json:"status"`
-	Page   int32     `json:"page"`
-	Limit  int32     `json:"limit"`
-}
-type ListBedsResponse struct {
-	Beds       []BedInfo `json:"beds"`
-	TotalCount int32     `json:"total_count"`
-}
-
-type UpdateBedRequest struct {
-	ID          string    `json:"id"`
-	BedNumber   int64     `json:"bed_number"`
-	BedType     BedType   `json:"bed_type"`
-	Description string    `json:"description"`
-	Status      BedStatus `json:"status"`
-}
-type UpdateBedResponse struct {
-	Bed BedInfo `json:"bed"`
-}
-
-type DeleteBedRequest struct {
-	ID string `json:"id"`
-}
-type DeleteBedResponse struct {
 	Status int64 `json:"status"`
 }
