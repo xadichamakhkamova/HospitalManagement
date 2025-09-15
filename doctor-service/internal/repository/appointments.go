@@ -8,18 +8,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 	pb "github.com/xadichamakhkamova/HospitalContracts/genproto/doctorpb"
-	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/google/uuid"
 )
-
-// NullTime → *timestamppb.Timestamp converter
-func convertNullTime(nt sql.NullTime) *timestamppb.Timestamp {
-	if nt.Valid {
-		return timestamppb.New(nt.Time)
-	}
-	return nil
-}
 
 type DoctorREPO struct {
 	queries *storage.Queries
@@ -35,7 +26,7 @@ func NewDoctorSqlc(db *sql.DB, log *logrus.Logger) *DoctorREPO {
 
 func (q *DoctorREPO) CreateAppointment(ctx context.Context, req *pb.CreateAppointmentRequest) (*pb.CreateAppointmentResponse, error) {
 
-	q.log.Infof("CreateAppointment called with DoctorId=%s, PatientId=%s, Date=%v", req.DoctorId, req.PatientId, req.Date.AsTime())
+	q.log.Infof("CreateAppointment called with DoctorId=%s, PatientId=%s, Date=%v", req.DoctorId, req.PatientId, req.Date)
 
 	doctor_id, err := uuid.Parse(req.DoctorId)
 	if err != nil {
@@ -48,10 +39,17 @@ func (q *DoctorREPO) CreateAppointment(ctx context.Context, req *pb.CreateAppoin
 		return nil, err
 	}
 
+	layout := "2006-01-02 15:04:05" 
+	parsedDate, err := time.Parse(layout, req.Date)
+	if err != nil {
+		q.log.Errorf("Invalid date format: %v", err)
+		return nil, err
+	}
+
 	resp, err := q.queries.CreateAppointment(ctx, storage.CreateAppointmentParams{
 		DoctorID:        doctor_id,
 		PatientID:       patient_id,
-		AppointmentDate: req.Date.AsTime(),
+		AppointmentDate: parsedDate,
 	})
 	if err != nil {
 		q.log.Errorf("CreateAppointment error: %v", err)
@@ -64,10 +62,10 @@ func (q *DoctorREPO) CreateAppointment(ctx context.Context, req *pb.CreateAppoin
 			Id:        resp.ID.String(),
 			DoctorId:  resp.DoctorID.String(),
 			PatientId: resp.PatientID.String(),
-			Date:      convertNullTime(sql.NullTime{Time: resp.AppointmentDate, Valid: true}),
+			Date:      resp.AppointmentDate.String(),
 			Timestamps: &pb.Timestamps2{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -95,10 +93,10 @@ func (q *DoctorREPO) GetAppointmentById(ctx context.Context, req *pb.GetAppointm
 			Id:        resp.ID.String(),
 			DoctorId:  resp.DoctorID.String(),
 			PatientId: resp.PatientID.String(),
-			Date:      convertNullTime(sql.NullTime{Time: resp.AppointmentDate, Valid: true}),
+			Date:      resp.AppointmentDate.String(),
 			Timestamps: &pb.Timestamps2{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -106,10 +104,17 @@ func (q *DoctorREPO) GetAppointmentById(ctx context.Context, req *pb.GetAppointm
 
 func (q *DoctorREPO) ListAppointments(ctx context.Context, req *pb.ListAppointmentsRequest) (*pb.ListAppointmentsResponse, error) {
 
-	q.log.Infof("ListAppointments called with Date=%v, Limit=%d, Page=%d", req.Date.AsTime(), req.Limit, req.Page)
+	q.log.Infof("ListAppointments called with Date=%v, Limit=%d, Page=%d", req.Date, req.Limit, req.Page)
+
+	layout := "2006-01-02 15:04:05" 
+	parsedDate, err := time.Parse(layout, req.Date)
+	if err != nil {
+		q.log.Errorf("Invalid date format: %v", err)
+		return nil, err
+	}
 
 	params := storage.ListAppointmentsParams{
-		Column1: req.Date.AsTime(),
+		Column1: parsedDate,
 		Limit:   req.Limit,
 		Column3: req.Page,
 	}
@@ -129,8 +134,8 @@ func (q *DoctorREPO) ListAppointments(ctx context.Context, req *pb.ListAppointme
 			PatientId: r.PatientID.String(),
 			Date:      req.Date,
 			Timestamps: &pb.Timestamps2{
-				CreatedAt: convertNullTime(r.CreatedAt),
-				UpdatedAt: convertNullTime(r.UpdatedAt),
+				CreatedAt: r.CreatedAt.Time.String(),
+				UpdatedAt: r.UpdatedAt.Time.String(),
 			},
 		})
 		totalCount = r.TotalCount
@@ -145,7 +150,7 @@ func (q *DoctorREPO) ListAppointments(ctx context.Context, req *pb.ListAppointme
 
 func (q *DoctorREPO) UpdateAppointment(ctx context.Context, req *pb.UpdateAppointmentRequest) (*pb.UpdateAppointmentResponse, error) {
 
-	q.log.Infof("UpdateAppointment called with ID=%s, DoctorId=%s, PatientId=%s, Date=%v", req.Id, req.DoctorId, req.PatientId, req.Date.AsTime())
+	q.log.Infof("UpdateAppointment called with ID=%s, DoctorId=%s, PatientId=%s, Date=%v", req.Id, req.DoctorId, req.PatientId, req.Date)
 
 	id, err := uuid.Parse(req.Id)
 	if err != nil {
@@ -163,11 +168,18 @@ func (q *DoctorREPO) UpdateAppointment(ctx context.Context, req *pb.UpdateAppoin
 		return nil, err
 	}
 
+	layout := "2006-01-02 15:04:05" 
+	parsedDate, err := time.Parse(layout, req.Date)
+	if err != nil {
+		q.log.Errorf("Invalid date format: %v", err)
+		return nil, err
+	}
+
 	resp, err := q.queries.UpdateAppointment(ctx, storage.UpdateAppointmentParams{
 		ID:              id,
 		DoctorID:        doctor_id,
 		PatientID:       patient_id,
-		AppointmentDate: req.Date.AsTime(),
+		AppointmentDate: parsedDate,
 		UpdatedAt:       sql.NullTime{Time: time.Now(), Valid: true},
 	})
 	if err != nil {
@@ -181,10 +193,10 @@ func (q *DoctorREPO) UpdateAppointment(ctx context.Context, req *pb.UpdateAppoin
 			Id:        resp.ID.String(),
 			DoctorId:  resp.DoctorID.String(),
 			PatientId: resp.PatientID.String(),
-			Date:      convertNullTime(sql.NullTime{Time: resp.AppointmentDate, Valid: true}),
+			Date:      resp.AppointmentDate.String(),
 			Timestamps: &pb.Timestamps2{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil

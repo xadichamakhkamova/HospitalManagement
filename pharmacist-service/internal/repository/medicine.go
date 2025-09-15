@@ -8,20 +8,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 	pb "github.com/xadichamakhkamova/HospitalContracts/genproto/pharmacistpb"
-	"google.golang.org/protobuf/types/known/timestamppb"
-
-	//"pharmacist-service/logger"
 
 	"github.com/google/uuid"
 )
-
-// NullTime → *timestamppb.Timestamp converter
-func convertNullTime(nt sql.NullTime) *timestamppb.Timestamp {
-	if nt.Valid {
-		return timestamppb.New(nt.Time)
-	}
-	return nil
-}
 
 type PharmaREPO struct {
 	queries *storage.Queries
@@ -57,14 +46,14 @@ func (q *PharmaREPO) CreateMedicine(ctx context.Context, req *pb.CreateMedicineR
 		Medicine: &pb.Medicine{
 			Id:          resp.ID.String(),
 			Name:        resp.Name,
-			Category:    pb.MedicineCategoryType(pb.MedicineCategoryType_value[string(resp.Category)]),
+			Category:    pb.MedicineCategory(pb.MedicineCategory_value[string(resp.Category)]),
 			Description: resp.Description,
 			Price:       float32(resp.Price),
 			Company:     resp.Company,
 			Status:      pb.MedicineStatus(pb.MedicineStatus_value[string(resp.Status)]),
 			Timestamps: &pb.Timestamps5{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -91,14 +80,14 @@ func (q *PharmaREPO) GetMedicineById(ctx context.Context, req *pb.GetMedicineByI
 		Medicine: &pb.Medicine{
 			Id:          resp.ID.String(),
 			Name:        resp.Name,
-			Category:    pb.MedicineCategoryType(pb.MedicineCategoryType_value[string(resp.Category)]),
+			Category:     pb.MedicineCategory(pb.MedicineCategory_value[string(resp.Category)]),
 			Description: resp.Description,
 			Price:       float32(resp.Price),
 			Company:     resp.Company,
 			Status:      pb.MedicineStatus(pb.MedicineStatus_value[string(resp.Status)]),
 			Timestamps: &pb.Timestamps5{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -128,14 +117,14 @@ func (q *PharmaREPO) ListMedicines(ctx context.Context, req *pb.ListMedicinesReq
 		medicines = append(medicines, &pb.Medicine{
 			Id:          r.ID.String(),
 			Name:        r.Name,
-			Category:    pb.MedicineCategoryType(pb.MedicineCategoryType_value[string(r.Category)]),
+			Category:     pb.MedicineCategory(pb.MedicineCategory_value[string(r.Category)]),
 			Description: r.Description,
 			Price:       float32(r.Price),
 			Company:     r.Company,
 			Status:      pb.MedicineStatus(pb.MedicineStatus_value[string(r.Status)]),
 			Timestamps: &pb.Timestamps5{
-				CreatedAt: convertNullTime(r.CreatedAt),
-				UpdatedAt: convertNullTime(r.UpdatedAt),
+				CreatedAt: r.CreatedAt.Time.String(),
+				UpdatedAt: r.UpdatedAt.Time.String(),
 			},
 		})
 		totalCount = r.TotalCount
@@ -178,14 +167,14 @@ func (q *PharmaREPO) UpdateMedicine(ctx context.Context, req *pb.UpdateMedicineR
 		Medicine: &pb.Medicine{
 			Id:          resp.ID.String(),
 			Name:        resp.Name,
-			Category:    pb.MedicineCategoryType(pb.MedicineCategoryType_value[string(resp.Category)]),
+			Category:     pb.MedicineCategory(pb.MedicineCategory_value[string(resp.Category)]),
 			Description: resp.Description,
 			Price:       float32(resp.Price),
 			Company:     resp.Company,
 			Status:      pb.MedicineStatus(pb.MedicineStatus_value[string(resp.Status)]),
 			Timestamps: &pb.Timestamps5{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil

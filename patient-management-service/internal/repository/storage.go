@@ -8,18 +8,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 	pb "github.com/xadichamakhkamova/HospitalContracts/genproto/patientpb"
-	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/google/uuid"
 )
-
-// NullTime → *timestamppb.Timestamp converter
-func convertNullTime(nt sql.NullTime) *timestamppb.Timestamp {
-	if nt.Valid {
-		return timestamppb.New(nt.Time)
-	}
-	return nil
-}
 
 type PatientREPO struct {
 	queries *storage.Queries
@@ -74,8 +65,8 @@ func (q *PatientREPO) CreatePatient(ctx context.Context, req *pb.CreatePatientRe
 			BirthDate:   resp.BirthDate.Format("2006-01-02"),
 			BloodGroup:  pb.BloodType(blood_group),
 			Timestamps: &pb.Timestamps4{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -113,8 +104,8 @@ func (q *PatientREPO) GetPatientById(ctx context.Context, req *pb.GetPatientById
 			BirthDate:   resp.BirthDate.Format("2006-01-02"),
 			BloodGroup:  pb.BloodType(blood_group),
 			Timestamps: &pb.Timestamps4{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -154,8 +145,8 @@ func (q *PatientREPO) ListPatients(ctx context.Context, req *pb.ListPatientsRequ
 			BirthDate:   r.BirthDate.Format("2006-01-02"),
 			BloodGroup:  pb.BloodType(blood_group),
 			Timestamps: &pb.Timestamps4{
-				CreatedAt: convertNullTime(r.CreatedAt),
-				UpdatedAt: convertNullTime(r.UpdatedAt),
+				CreatedAt: r.CreatedAt.Time.String(),
+				UpdatedAt: r.UpdatedAt.Time.String(),
 			},
 		})
 		totalCount = r.TotalCount
@@ -216,8 +207,8 @@ func (q *PatientREPO) UpdatePatient(ctx context.Context, req *pb.UpdatePatientRe
 			BirthDate:   resp.BirthDate.Format("2006-01-02"),
 			BloodGroup:  pb.BloodType(blood_group),
 			Timestamps: &pb.Timestamps4{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil

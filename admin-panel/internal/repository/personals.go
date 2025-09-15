@@ -40,8 +40,8 @@ func (q *AdminREPO) CreatePersonal(ctx context.Context, req *pb.CreatePersonalRe
 			Address:     resp.Address.String,
 			PhoneNumber: resp.PhoneNumber.String,
 			Timestamps: &pb.Timestamps1{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -74,8 +74,8 @@ func (q *AdminREPO) GetPersonalById(ctx context.Context, req *pb.GetPersonalById
 			Address:     resp.Address.String,
 			PhoneNumber: resp.PhoneNumber.String,
 			Timestamps: &pb.Timestamps1{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -109,8 +109,8 @@ func (q *AdminREPO) ListPersonals(ctx context.Context, req *pb.ListPersonalsRequ
 			Address:     r.Address.String,
 			PhoneNumber: r.PhoneNumber.String,
 			Timestamps: &pb.Timestamps1{
-				CreatedAt: convertNullTime(r.CreatedAt),
-				UpdatedAt: convertNullTime(r.UpdatedAt),
+				CreatedAt: r.CreatedAt.Time.String(),
+				UpdatedAt: r.UpdatedAt.Time.String(),
 			},
 		})
 		totalCount = int32(r.TotalCount)
@@ -159,8 +159,8 @@ func (q *AdminREPO) UpdatePersonal(ctx context.Context, req *pb.UpdatePersonalRe
 			Address:     resp.Address.String,
 			PhoneNumber: resp.PhoneNumber.String,
 			Timestamps: &pb.Timestamps1{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil

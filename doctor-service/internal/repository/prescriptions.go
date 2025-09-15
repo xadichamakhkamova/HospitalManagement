@@ -47,8 +47,8 @@ func (q *DoctorREPO) CreatePrescription(ctx context.Context, req *pb.CreatePresc
 			Medication:  resp.Medication,
 			Description: resp.Description.String,
 			Timestamps: &pb.Timestamps2{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -80,8 +80,8 @@ func (q *DoctorREPO) GetPrescriptionById(ctx context.Context, req *pb.GetPrescri
 			Medication:  resp.Medication,
 			Description: resp.Description.String,
 			Timestamps: &pb.Timestamps2{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -113,8 +113,8 @@ func (q *DoctorREPO) ListPrescriptions(ctx context.Context, req *pb.ListPrescrip
 			Medication:  r.Medication,
 			Description: r.Description.String,
 			Timestamps: &pb.Timestamps2{
-				CreatedAt: convertNullTime(r.CreatedAt),
-				UpdatedAt: convertNullTime(r.UpdatedAt),
+				CreatedAt: r.CreatedAt.Time.String(),
+				UpdatedAt: r.UpdatedAt.Time.String(),
 			},
 		})
 		totalCount = r.TotalCount
@@ -171,8 +171,8 @@ func (q *DoctorREPO) UpdatePrescription(ctx context.Context, req *pb.UpdatePresc
 			Medication:  resp.Medication,
 			Description: resp.Description.String,
 			Timestamps: &pb.Timestamps2{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil

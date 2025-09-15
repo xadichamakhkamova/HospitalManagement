@@ -37,8 +37,8 @@ func (q *AdminREPO) CreateDoctor(ctx context.Context, req *pb.CreateDoctorReques
 		PersonalId:       resp.PersonalID.String(),
 		DepartmentNumber: resp.DepartmentNumber,
 		Timestamps: &pb.Timestamps1{
-			CreatedAt: convertNullTime(resp.CreatedAt),
-			UpdatedAt: convertNullTime(resp.UpdatedAt),
+			CreatedAt: resp.CreatedAt.Time.String(),
+			UpdatedAt: resp.UpdatedAt.Time.String(),
 		},
 	}, nil
 }
@@ -71,8 +71,8 @@ func (q *AdminREPO) GetDoctorById(ctx context.Context, req *pb.GetPersonalByIdRe
 				Address:     resp.Address.String,
 				PhoneNumber: resp.PhoneNumber.String,
 				Timestamps: &pb.Timestamps1{
-					CreatedAt: convertNullTime(resp.CreatedAt),
-					UpdatedAt: convertNullTime(resp.UpdatedAt),
+					CreatedAt: resp.CreatedAt.Time.String(),
+					UpdatedAt: resp.UpdatedAt.Time.String(),
 				},
 			},
 			PersonalId:       resp.PersonalID.String(),
@@ -110,8 +110,8 @@ func (q *AdminREPO) ListDoctors(ctx context.Context, req *pb.ListPersonalsReques
 				Address:     r.Address.String,
 				PhoneNumber: r.PhoneNumber.String,
 				Timestamps: &pb.Timestamps1{
-					CreatedAt: convertNullTime(r.CreatedAt),
-					UpdatedAt: convertNullTime(r.UpdatedAt),
+					CreatedAt: r.CreatedAt.Time.String(),
+					UpdatedAt: r.UpdatedAt.Time.String(),
 				},
 			},
 			PersonalId:       r.PersonalID.String(),
@@ -153,8 +153,8 @@ func (q *AdminREPO) UpdateDoctor(ctx context.Context, req *pb.UpdateDoctorReques
 		PersonalId:       resp.PersonalID.String(),
 		DepartmentNumber: resp.DepartmentNumber,
 		Timestamps: &pb.Timestamps1{
-			CreatedAt: convertNullTime(resp.CreatedAt),
-			UpdatedAt: convertNullTime(resp.UpdatedAt),
+			CreatedAt: resp.CreatedAt.Time.String(),
+			UpdatedAt: resp.UpdatedAt.Time.String(),
 		},
 	}, nil
 }

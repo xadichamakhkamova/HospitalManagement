@@ -8,18 +8,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 	pb "github.com/xadichamakhkamova/HospitalContracts/genproto/nursepb"
-	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/google/uuid"
 )
-
-// NullTime → *timestamppb.Timestamp converter
-func convertNullTime(nt sql.NullTime) *timestamppb.Timestamp {
-	if nt.Valid {
-		return timestamppb.New(nt.Time)
-	}
-	return nil
-}
 
 type NurseREPO struct {
 	queries *storage.Queries
@@ -70,8 +61,8 @@ func (q *NurseREPO) CreateDonor(ctx context.Context, req *pb.CreateDonorRequest)
 			Weight:           float64(resp.Weight),
 			HealthConditions: pb.HealthConditionType(pb.HealthConditionType_value[string(resp.HealthCondition)]),
 			Timestamps: &pb.Timestamps3{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -103,8 +94,8 @@ func (q *NurseREPO) GetDonorById(ctx context.Context, req *pb.GetDonorByIdReques
 			Weight:           float64(resp.Weight),
 			HealthConditions: pb.HealthConditionType(pb.HealthConditionType_value[string(resp.HealthCondition)]),
 			Timestamps: &pb.Timestamps3{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -139,16 +130,16 @@ func (q *NurseREPO) ListDonors(ctx context.Context, req *pb.ListDonorsRequest) (
 			Gender:           string(r.Gender),
 			BirthDate:        r.BirthDate.Format("2006-01-02"),
 			BloodGroup:       string(r.BloodGroup),
-			LastDonation:     convertNullTime(r.LastDonation),
+			LastDonation:     r.LastDonation.Time.String(),
 			DonationCount:    r.DonationCount.Int32,
 			IsEligible:       r.IsEligible.Bool,
-			LastCheckupDate:  convertNullTime(r.LastCheckupDate),
+			LastCheckupDate:  r.LastCheckupDate.Time.String(),
 			Weight:           float64(r.Weight),
 			HealthConditions: pb.HealthConditionType(pb.HealthConditionType_value[string(r.HealthCondition)]),
 			DonationLocation: r.DonationLocation.String,
 			Timestamps: &pb.Timestamps3{
-				CreatedAt: convertNullTime(r.CreatedAt),
-				UpdatedAt: convertNullTime(r.UpdatedAt),
+				CreatedAt: r.CreatedAt.Time.String(),
+				UpdatedAt: r.UpdatedAt.Time.String(),
 			},
 		})
 		totalCount = r.TotalCount
@@ -203,8 +194,8 @@ func (q *NurseREPO) UpdateDonor(ctx context.Context, req *pb.UpdateDonorRequest)
 			Weight:           float64(resp.Weight),
 			HealthConditions: pb.HealthConditionType(pb.HealthConditionType_value[string(resp.HealthCondition)]),
 			Timestamps: &pb.Timestamps3{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -246,7 +237,7 @@ func (q *NurseREPO) RegisterDonation(ctx context.Context, req *pb.RegisterDonati
 	}
 
 	return &pb.RegisterDonationResponse{
-		LastDonation:  convertNullTime(resp.LastDonation),
+		LastDonation:  resp.LastDonation.Time.String(),
 		DonationCount: resp.DonationCount.Int32,
 		IsEligible:    resp.IsEligible.Bool,
 	}, nil
@@ -265,7 +256,7 @@ func (q *NurseREPO) RegisterCheckup(ctx context.Context, req *pb.RegisterCheckup
 	}
 
 	return &pb.RegisterCheckupResponse{
-		LastCheckupDate: convertNullTime(resp.LastCheckupDate),
+		LastCheckupDate: resp.LastCheckupDate.Time.String(),
 		IsEligible:      resp.IsEligible.Bool,
 	}, nil
 }

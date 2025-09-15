@@ -8,18 +8,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 	pb "github.com/xadichamakhkamova/HospitalContracts/genproto/adminpb"
-	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/google/uuid"
 )
-
-// NullTime → *timestamppb.Timestamp converter
-func convertNullTime(nt sql.NullTime) *timestamppb.Timestamp {
-	if nt.Valid {
-		return timestamppb.New(nt.Time)
-	}
-	return nil
-}
 
 type AdminREPO struct {
 	queries *storage.Queries
@@ -54,8 +45,8 @@ func (q *AdminREPO) CreateDepartment(ctx context.Context, req *pb.CreateDepartme
 			Number:      int64(resp.Number),
 			Description: resp.Description.String,
 			Timestamps: &pb.Timestamps1{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -85,8 +76,8 @@ func (q *AdminREPO) GetDepartmentById(ctx context.Context, req *pb.GetDepartment
 			Number:      int64(resp.Number),
 			Description: resp.Description.String,
 			Timestamps: &pb.Timestamps1{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
@@ -118,8 +109,8 @@ func (q *AdminREPO) ListDeparments(ctx context.Context, req *pb.ListDepartmentsR
 			Number:      int64(r.Number),
 			Description: r.Description.String,
 			Timestamps: &pb.Timestamps1{
-				CreatedAt: convertNullTime(r.CreatedAt),
-				UpdatedAt: convertNullTime(r.UpdatedAt),
+				CreatedAt: r.CreatedAt.Time.String(),
+				UpdatedAt: r.UpdatedAt.Time.String(),
 			},
 		})
 		totalCount = r.TotalCount
@@ -162,15 +153,15 @@ func (q *AdminREPO) UpdateDepartment(ctx context.Context, req *pb.UpdateDepartme
 			Number:      int64(resp.Number),
 			Description: resp.Description.String,
 			Timestamps: &pb.Timestamps1{
-				CreatedAt: convertNullTime(resp.CreatedAt),
-				UpdatedAt: convertNullTime(resp.UpdatedAt),
+				CreatedAt: resp.CreatedAt.Time.String(),
+				UpdatedAt: resp.UpdatedAt.Time.String(),
 			},
 		},
 	}, nil
 }
 
 func (q *AdminREPO) DeleteDepartment(ctx context.Context, req *pb.DeleteDepartmentRequest) (*pb.DeleteDepartmentResponse, error) {
-	
+
 	q.log.Infof("DeleteDepartment called with ID=%s", req.Id)
 
 	id, err := uuid.Parse(req.Id)
